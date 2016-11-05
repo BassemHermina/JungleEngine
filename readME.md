@@ -9,7 +9,7 @@ _current texture loader : .bmp_
   - finish the `Hierarchy` implementation
   - improve the moving code, and the `Update` function due to pressing keys
   - try many light shaders as adding objects is more easy now  
-    *SSAO, AO, PBR, GI, CEL-SHADING(toon), FLAT SHADING WITH BAKED AO. ......*
+    ######*SSAO, AO, PBR, GI, CEL-SHADING(toon), FLAT SHADING WITH BAKED AO. ......*
   - try many controls for navigation 
   - add collision boxes to the `GameObject`
   - Antiallising !
@@ -19,7 +19,7 @@ _current texture loader : .bmp_
   - 2D picture viewing
   - text viewing
   - sounds
-  - Bone animations .fbx import through ASSIMP
+  - Bone animations .fbx import through ASSIMP  
   
   ######Usefull links: https://docs.google.com/document/d/1OJ8DwgFXHqbsONa_ZvlkZNqia4TAz4j0rmrygDhw36Y/edit?usp=sharing  
     
