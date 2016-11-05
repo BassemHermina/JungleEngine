@@ -8,9 +8,9 @@ _current texture loader : .bmp_
   - complete the add `GameObject` codes
   - finish the `Hierarchy` implementation
   - improve the moving code, and the `Update` function due to pressing keys
-  - try many light shaders as adding objects is more easy now  
-    ######*SSAO, AO, PBR, GI, CEL-SHADING(toon), FLAT SHADING WITH BAKED AO. ......*
-  - try many controls for navigation 
+  - try many light shaders as adding objects is more easy now   
+      *SSAO, AO, PBR, GI, CEL-SHADING(toon), FLAT SHADING WITH BAKED AO. ......*
+  - try many controls for navigation
   - add collision boxes to the `GameObject`
   - Antiallising !
   - implement functions to deal with the collisions
