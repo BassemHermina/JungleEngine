@@ -1,8 +1,8 @@
 >This is an OpenGl Engine implemented with C++/Cmake on Linux
 
 
-_current file loader : .obj_  
-_current texture loader : .bmp_ 
+_current file loader extensions : .obj_  
+_current texture loader extensions : .bmp_ 
 
 **Required:**
   - complete the add `GameObject` codes
