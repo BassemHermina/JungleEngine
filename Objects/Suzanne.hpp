@@ -25,13 +25,18 @@ public:
     SuzanneClass();
     const char* fileLocation;
     const char* textureLocation;
+
     GLuint Texture;
+
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
     std::vector<glm::vec3> normals;
+
     bool res; //for function loadOBJ
+
     GLuint vertexbuffer;
     GLuint uvbuffer;
+    GLuint normalbuffer;
 
     glm::mat4 ProjectionMatrix;
     glm::mat4 ViewMatrix;

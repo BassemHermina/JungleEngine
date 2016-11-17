@@ -32,6 +32,7 @@ public:
     bool res; //for function loadOBJ
     GLuint vertexbuffer;
     GLuint uvbuffer;
+    GLuint normalbuffer;
 
     glm::mat4 ProjectionMatrix;
     glm::mat4 ViewMatrix;

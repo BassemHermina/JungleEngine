@@ -42,25 +42,31 @@ void ShellClass::generateAndBindBuffers()
     glGenBuffers(1, &this->uvbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, this->uvbuffer);
     glBufferData(GL_ARRAY_BUFFER, this->uvs.size() * sizeof(glm::vec2), &this->uvs[0], GL_STATIC_DRAW);
+
+    glGenBuffers(1, &this->normalbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, this->normalbuffer);
+    glBufferData(GL_ARRAY_BUFFER, this->normals.size() * sizeof(glm::vec3), &this->normals[0], GL_STATIC_DRAW);
 }
 
 void ShellClass::sendDatatoBuffers()
 {
     // Send our transformation to the currently bound shader,
     // in the "MVP" uniform
-    glUniformMatrix4fv(getOPENGLTAGS().MatrixIDHandle, 1, GL_FALSE, &this->MVP[0][0]);
+    glUniformMatrix4fv(getOPENGLTAGS().Shader_MVPMatrixID, 1, GL_FALSE, &MVP[0][0]);
+    glUniformMatrix4fv(getOPENGLTAGS().Shader_ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
+    glUniformMatrix4fv(getOPENGLTAGS().Shader_ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
 
     // Bind our texture in Texture Unit 0
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this->Texture);
     // Set our "myTextureSampler" sampler to user Texture Unit 0
-    glUniform1i(getOPENGLTAGS().TextureIDHandle, 0);
+    glUniform1i(getOPENGLTAGS().Shader_TextureID, 0);
 
     // 1rst attribute buffer : vertices
-    glEnableVertexAttribArray(getOPENGLTAGS().vertexPosition_modelspaceIDHandle);
+    glEnableVertexAttribArray(getOPENGLTAGS().Shader_vertexPosition_modelspaceID);
     glBindBuffer(GL_ARRAY_BUFFER, this->vertexbuffer);
     glVertexAttribPointer(
-        getOPENGLTAGS().vertexPosition_modelspaceIDHandle,  // The attribute we want to configure
+        getOPENGLTAGS().Shader_vertexPosition_modelspaceID,  // The attribute we want to configure
         3,                            // size
         GL_FLOAT,                     // type
         GL_FALSE,                     // normalized?
@@ -69,11 +75,23 @@ void ShellClass::sendDatatoBuffers()
     );
 
     // 2nd attribute buffer : UVs
-    glEnableVertexAttribArray(getOPENGLTAGS().vertexUVIDHandle);
+    glEnableVertexAttribArray(getOPENGLTAGS().Shader_vertexUVID);
     glBindBuffer(GL_ARRAY_BUFFER, this->uvbuffer);
     glVertexAttribPointer(
-        getOPENGLTAGS().vertexUVIDHandle,                   // The attribute we want to configure
+        getOPENGLTAGS().Shader_vertexUVID,                   // The attribute we want to configure
         2,                            // size : U+V => 2
+        GL_FLOAT,                     // type
+        GL_FALSE,                     // normalized?
+        0,                            // stride
+        (void*)0                      // array buffer offset
+    );
+
+    // 3rd attribute buffer : normals
+    glEnableVertexAttribArray(getOPENGLTAGS().Shader_vertexNormal_modelspaceID);
+    glBindBuffer(GL_ARRAY_BUFFER, this->normalbuffer);
+    glVertexAttribPointer(
+        getOPENGLTAGS().Shader_vertexNormal_modelspaceID,    // The attribute we want to configure
+        3,                            // size
         GL_FLOAT,                     // type
         GL_FALSE,                     // normalized?
         0,                            // stride
@@ -83,8 +101,10 @@ void ShellClass::sendDatatoBuffers()
 
 void ShellClass::disableAttribsAfterDraw()
 {
-    glDisableVertexAttribArray(getOPENGLTAGS().vertexPosition_modelspaceIDHandle);
-    glDisableVertexAttribArray(getOPENGLTAGS().vertexUVIDHandle);
+    glDisableVertexAttribArray(getOPENGLTAGS().Shader_vertexPosition_modelspaceID);
+    glDisableVertexAttribArray(getOPENGLTAGS().Shader_vertexUVID);
+    glDisableVertexAttribArray(getOPENGLTAGS().Shader_vertexNormal_modelspaceID);
+
 }
 
 void ShellClass::updateMVPaccordingToPressKeys()

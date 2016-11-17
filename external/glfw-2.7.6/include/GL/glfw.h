@@ -274,6 +274,11 @@ extern "C" {
 #define GLFW_KEY_LSUPER       (GLFW_KEY_SPECIAL+67)
 #define GLFW_KEY_RSUPER       (GLFW_KEY_SPECIAL+68)
 #define GLFW_KEY_MENU         (GLFW_KEY_SPECIAL+69)
+#define GLFW_KEY_w             167
+#define GLFW_KEY_a             97
+#define GLFW_KEY_s             115
+#define GLFW_KEY_d             100
+//they are Dec code for the letters
 #define GLFW_KEY_LAST         GLFW_KEY_MENU
 
 /* Mouse button definitions */

@@ -5,6 +5,8 @@ _current file loader extensions : .obj_
 _current texture loader extensions : .bmp_ 
 
 **Required:**
+  - efsel el generate buffer 3n el bind buffer gowa el object draw we 5aliha fi create!
+
   - complete the add `GameObject` codes
   - finish the `Hierarchy` implementation
   - improve the moving code, and the `Update` function due to pressing keys

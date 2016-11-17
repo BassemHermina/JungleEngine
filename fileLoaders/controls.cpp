@@ -30,7 +30,8 @@ float initialFoV = 45.0f;
 
 float speed = 12.0f; // 3 units / second
 float mouseSpeed = 0.002f;
-
+int xvirtual =  1042/2;int dy;
+int yvirtual =  768/2;
 
 void computeMatricesFromInputs(){
 
@@ -43,15 +44,26 @@ void computeMatricesFromInputs(){
 
 	// Get mouse position
 	int xpos, ypos;
-	glfwGetMousePos(&xpos, &ypos);
+    glfwGetMousePos(&xpos, &ypos);
 
+    //const float mouseSensitivity = 0.1f;
+    // double cursorX, cursorY;
+    // Reset mouse position for next frame
+    //BS: but it causes lag in mouse viewing
+
+    if (xpos != 1024/2) xvirtual = xvirtual + (xpos - 1024/2);
+    if (ypos != 768/2) yvirtual = yvirtual + (ypos - 768/2);
+
+    glfwSetMousePos(1024/2,768/2);
 	// Reset mouse position for next frame
 	// EDIT : Doesn't work on Mac OS, hence the code below is a bit different from the website's
 	//glfwSetMousePos(1024/2, 768/2);
 
 	// Compute new orientation
-	horizontalAngle = 3.14f + mouseSpeed * float(1024/2 - xpos );
-	verticalAngle   = mouseSpeed * float( 768/2 - ypos );
+    horizontalAngle = 3.14f + mouseSpeed * float(1024/2 - xvirtual );
+    verticalAngle   = mouseSpeed * float( 768/2 - yvirtual );
+
+
 
 	// Direction : Spherical coordinates to Cartesian coordinates conversion
 	glm::vec3 direction(
@@ -71,7 +83,7 @@ void computeMatricesFromInputs(){
     glm::vec3 up = glm::cross( right, direction );
 
 	// Move forward
-	if (glfwGetKey( GLFW_KEY_UP ) == GLFW_PRESS){
+    if (glfwGetKey( GLFW_KEY_UP ) || glfwGetKey( GLFW_KEY_w ) == GLFW_PRESS){
 		position += direction * deltaTime * speed;
 	}
 	// Move backward
@@ -91,6 +103,11 @@ void computeMatricesFromInputs(){
     }
 
 	float FoV = initialFoV - 5 * glfwGetMouseWheel();
+
+//    //B: to allow to to freely rotate in the game
+//    if (xpos == 1023)
+//        xpos = 1;
+//    glfwSetMousePos(xpos, ypos);
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 	ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 100.0f);
