@@ -12,6 +12,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/rpavlik-cmake-module
 include(CreateLaunchers)
 include(MSVCMultipleProcessCompile) # /MP
 
+
 if(INCLUDE_DISTRIB)
         add_subdirectory(distrib)
 endif(INCLUDE_DISTRIB)
@@ -66,6 +67,10 @@ add_executable( main
     includes.hpp
     fileLoaders/controls.cpp
     fileLoaders/controls.hpp
+    debug.cpp
+    debug.hpp
+    Objects/plane.cpp
+    Objects/plane.hpp
 
 
 )

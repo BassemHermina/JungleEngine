@@ -24,10 +24,10 @@ void main(){
 	
 	// Material properties
 	vec3 MaterialDiffuseColor = texture2D( myTextureSampler, UV ).rgb;
-	//vec3 MaterialAmbientColor = vec3(0.1,0.1,0.1) * MaterialDiffuseColor;
-	vec3 MaterialAmbientColor =  MaterialDiffuseColor; // k2ni drabt fi vec3(1,1,1)
+	vec3 MaterialAmbientColor = vec3(0.3,0.3,0.3) * MaterialDiffuseColor;
+	//vec3 MaterialAmbientColor =  MaterialDiffuseColor; // k2ni drabt fi vec3(1,1,1)
 	//el effect el ana 3aizo el flat da , el ambient fih = 1 bayen
-	vec3 MaterialSpecularColor = vec3(0,0,0);
+	vec3 MaterialSpecularColor = vec3(0.1,0.1,0.1);
 
 	// Distance to the light
 	float distance = length( LightPosition_worldspace - Position_worldspace );

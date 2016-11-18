@@ -25,6 +25,7 @@ using namespace glm;
 //object headers
 #include "Objects/Suzanne.hpp"
 #include "Objects/Shell.hpp"
+#include "Objects/plane.hpp"
 
 struct Handles {
     GLuint Shader_ProgramID;  //LoadShaders( "StandardShading.vertexshader", "StandardShading.fragmentshader" );

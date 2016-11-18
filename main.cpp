@@ -13,18 +13,19 @@
 
 
 int initializeGL();
-
+void lightControls();
 Handles OPENGLTAGS;
+float x = 10;
 
 using namespace std;
 
 int main(void)
 {
-    //BH: this should be a class that inherits from the monoBehaviorClass, so we will be able to add it to the system
-    //monobehaviorClass mon;
+    //!! fi moshkla fi etgah el light ba3d el rotate ,y3ni zy el kan 3la learnopengl keda , lama by3ml rotate, source
+    //! el noor byfdal zy ma howa, fa klohom ka2en el source bylef m3ahom keda
 
-    //initialize GL window
     initializeGL();
+
     //BH: the GameObjects_Bucket is the Datastructure that holds all the game objects with inherit from monobehavior
     hierarchy *GameObjects_Bucket= new hierarchy;
 
@@ -36,45 +37,67 @@ int main(void)
     SuzanneClass Suzanne5;
     SuzanneClass Suzanne6;
     ShellClass Shell;
+    PlaneClass Plane;
+    PlaneClass lightplaceCube;
 
     //////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////
     //////////////////////
+    ///
+
+    glm::mat4 RotationMatrix7 = eulerAngleYXZ(0.0f, 0.0f, 0.0f);//yaw, pitch and roll. Measured in radians
+    glm::mat4 TranslationMatrix7 = translate(mat4(), vec3(3.0f, 10.0f, 1.0f));  //3,4,1
+    //! hena el moshkla el 7asla fl render , el alwan wel eda2a darba keda
+    //! 3ashan el mfrod en el cube keda ben el objects asln wel noor , f lw 7rakt el object b3id btrga3 el eda2a tabi3ya
+
+    // lma b5ali el ambient a2al btb2a eda2a tab3ya shoia aktr , el hwa lma adalemha 5ales el dnia btswad , msh zy di keda , kol
+    //ma3ali ambient btb2a flat shading
+
+    glm::mat4 ScalingMatrix7 = scale(mat4(), vec3(0.2f, 0.2f, 0.2f));
+    glm::mat4 Model7 = TranslationMatrix7*RotationMatrix7 * ScalingMatrix7;//order of multiplication is important (try different values above and different order of multiplicationn
+    lightplaceCube.ModelMatrix = Model7 ;
+
+    glm::mat4 RotationMatrix0 = eulerAngleYXZ(0.0f, 0.0f, 0.0f);//yaw, pitch and roll. Measured in radians
+    glm::mat4 TranslationMatrix0 = translate(mat4(), vec3(0.0f, 0.0f, 0.0f));
+    glm::mat4 ScalingMatrix0 = scale(mat4(), vec3(6.0f, 0.02f, 6.0f));
+    glm::mat4 Model0 = TranslationMatrix0*RotationMatrix0 * ScalingMatrix0;//order of multiplication is important (try different values above and different order of multiplicationn
+    Plane.ModelMatrix = Model0 ;
+
     // da test le t7rik object suzanne 2
     glm::mat4 RotationMatrix = eulerAngleYXZ(0.0f, 0.0f, 2.0f);//yaw, pitch and roll. Measured in radians
     glm::mat4 TranslationMatrix = translate(mat4(), vec3(6.0f, 0.0f, 0.0f));
     glm::mat4 ScalingMatrix = scale(mat4(), vec3(1.0f, 1.0f, 1.0f));
-    glm::mat4 Model = TranslationMatrix*RotationMatrix * ScalingMatrix;//order of multiplication is important (try different values above and different order of multiplicationn
+    glm::mat4 Model = TranslationMatrix*RotationMatrix; //* ScalingMatrix;//order of multiplication is important (try different values above and different order of multiplicationn
     Suzanne2.ModelMatrix = Model ;
     //
     glm::mat4 RotationMatrix2 = eulerAngleYXZ(0.0f, 0.0f, 1.0f);//yaw, pitch and roll. Measured in radians
     glm::mat4 TranslationMatrix2 = translate(mat4(), vec3(-20.0f, 5.0f, 0.0f));
     glm::mat4 ScalingMatrix2 = scale(mat4(), vec3(1.0f, 1.0f, 1.0f));
-    glm::mat4 Model2 = TranslationMatrix2*RotationMatrix2 * ScalingMatrix2;//order of multiplication is important (try different values above and different order of multiplicationn
+    glm::mat4 Model2 = TranslationMatrix2*RotationMatrix2;// * ScalingMatrix2;//order of multiplication is important (try different values above and different order of multiplicationn
     Suzanne3.ModelMatrix =  Model2 ;
     //
     glm::mat4 RotationMatrix3 = eulerAngleYXZ(0.0f, 0.0f, 0.0f);//yaw, pitch and roll. Measured in radians
     glm::mat4 TranslationMatrix3 = translate(mat4(), vec3(6.0f, 3.0f, 10.0f));
     glm::mat4 ScalingMatrix3 = scale(mat4(), vec3(1.0f, 1.0f, 1.0f));
-    glm::mat4 Model3 = TranslationMatrix3*RotationMatrix3 * ScalingMatrix3;//order of multiplication is important (try different values above and different order of multiplicationn
+    glm::mat4 Model3 = TranslationMatrix3*RotationMatrix3;// * ScalingMatrix3;//order of multiplication is important (try different values above and different order of multiplicationn
     Suzanne4.ModelMatrix = Model3 ;
     //
     glm::mat4 RotationMatrix4 = eulerAngleYXZ(0.0f,-1.0f, 0.0f);//yaw, pitch and roll. Measured in radians
     glm::mat4 TranslationMatrix4 = translate(mat4(), vec3(6.0f, -4.0f, 0.0f));
     glm::mat4 ScalingMatrix4 = scale(mat4(), vec3(1.0f, 1.0f, 1.0f));
-    glm::mat4 Model4 = TranslationMatrix4 *RotationMatrix4 * ScalingMatrix4;//order of multiplication is important (try different values above and different order of multiplicationn
+    glm::mat4 Model4 = TranslationMatrix4 *RotationMatrix4;// * ScalingMatrix4;//order of multiplication is important (try different values above and different order of multiplicationn
     Suzanne5.ModelMatrix =  Model4 ;
     //
     glm::mat4 RotationMatrix5 = eulerAngleYXZ(0.0f, -5.0f, 2.0f);//yaw, pitch and roll. Measured in radians
     glm::mat4 TranslationMatrix5 = translate(mat4(), vec3(6.0f, 0.0f, 9.0f));
     glm::mat4 ScalingMatrix5 = scale(mat4(), vec3(1.0f, 1.0f, 1.0f));
-    glm::mat4 Model5 = TranslationMatrix5 *RotationMatrix5 * ScalingMatrix5;//order of multiplication is important (try different values above and different order of multiplicationn
+    glm::mat4 Model5 = TranslationMatrix5 *RotationMatrix5;// * ScalingMatrix5;//order of multiplication is important (try different values above and different order of multiplicationn
     Suzanne6.ModelMatrix =  Model5 ;
     //
     glm::mat4 RotationMatrix6 = eulerAngleYXZ(0.0f, 0.0f, 1.0f);//yaw, pitch and roll. Measured in radians
     glm::mat4 TranslationMatrix6 = translate(mat4(), vec3(-3.0f, 2.0f, 0.0f));
     glm::mat4 ScalingMatrix6 = scale(mat4(), vec3(1.0f, 1.0f, 1.0f));
-    glm::mat4 Model6 = TranslationMatrix6 *RotationMatrix6 * ScalingMatrix6;//order of multiplication is important (try different values above and different order of multiplicationn
+    glm::mat4 Model6 = TranslationMatrix6 *RotationMatrix6;// * ScalingMatrix6;//order of multiplication is important (try different values above and different order of multiplicationn
     Shell.ModelMatrix = Model6;  // here i manipulate the model matrix
     // and in the update function in the draw in each object i used to set it to identity , da el kan m5alih myt7araksh
     //
@@ -83,7 +106,6 @@ int main(void)
 
     //add the game objects to the list
    // GameObjects_Bucket->add(&Suzanne);
-int x = 10;
 
     do{
         // Clear the screen
@@ -98,18 +120,12 @@ int x = 10;
         Suzanne4.draw();
         Suzanne5.draw();
         Suzanne6.draw();
-
+        Plane.draw();
         Shell.draw();
+        lightplaceCube.draw();
 
-        // Send our transformation to the currently bound shader,
-        // in the "MVP" uniform
 
-        if ( glfwGetKey( GLFW_KEY_LSHIFT ) == GLFW_PRESS)
-            x+=1;
-        if ( glfwGetKey( GLFW_KEY_LCTRL ) == GLFW_PRESS)
-            x-=1;
-        glUniform1f(OPENGLTAGS.Shader_p,x+10);
-
+        lightControls();
         // Swap buffers
         glfwSwapBuffers();
 
@@ -206,11 +222,11 @@ int initializeGL()
 
 
 
-    glm::vec3 lightPos = glm::vec3(0,0,0);
+    glm::vec3 lightPos = glm::vec3(3,2,1);
     OPENGLTAGS.Shader_LightID = glGetUniformLocation(OPENGLTAGS.Shader_ProgramID, "LightPosition_worldspace");
     glUniform3f(OPENGLTAGS.Shader_LightID, lightPos.x, lightPos.y, lightPos.z);
 
-    glUniform1f(OPENGLTAGS.Shader_p,20);
+    glUniform1f(OPENGLTAGS.Shader_p,120);
 
     int x = 10;
     glShadeModel(GL_SMOOTH); //bassem edit
@@ -220,4 +236,19 @@ int initializeGL()
 Handles getOPENGLTAGS ()
 {
     return OPENGLTAGS;
+}
+
+
+void lightControls(){
+
+    if ( glfwGetKey( GLFW_KEY_LSHIFT ) == GLFW_PRESS)
+        x = x + 0.2;
+    if ( glfwGetKey( GLFW_KEY_LCTRL ) == GLFW_PRESS)
+        x = x - 0.2;
+    glUniform1f(OPENGLTAGS.Shader_p,x);
+
+}
+
+void drawPlane(){
+
 }
