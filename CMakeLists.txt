@@ -67,11 +67,11 @@ add_executable( main
     includes.hpp
     fileLoaders/controls.cpp
     fileLoaders/controls.hpp
-    debug.cpp
-    debug.hpp
     Objects/plane.cpp
     Objects/plane.hpp
-
+    Handles.hpp
+    initializeWorld.cpp
+    initializeWorld.hpp
 
 )
 target_link_libraries(main

@@ -30,7 +30,7 @@ float initialFoV = 45.0f;
 
 float speed = 12.0f; // 3 units / second
 float mouseSpeed = 0.002f;
-int xvirtual =  1042/2;int dy;
+int xvirtual =  1042/2;
 int yvirtual =  768/2;
 
 void computeMatricesFromInputs(){
