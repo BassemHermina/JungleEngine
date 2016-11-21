@@ -30,6 +30,8 @@ SuzanneClass::SuzanneClass()
     //these belongs to contol.cpp bas ana ha3ml wa7da zyha we hyb2a fiha el projection wel view matrices bto3 el world
     // Projection and view are global , laken model fi mnha fi kol wa7ed
     cout << "done" <<endl;
+    generateAndBindBuffers();
+    sendDatatoBuffers();
 
 }
 
@@ -54,8 +56,8 @@ void SuzanneClass::sendDatatoBuffers()
     // in the "MVP" uniform
 
     glUniformMatrix4fv(getOPENGLTAGS().Shader_MVPMatrixID, 1, GL_FALSE, &MVP[0][0]);
-    //glUniformMatrix4fv(getOPENGLTAGS().Shader_ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
-    //glUniformMatrix4fv(getOPENGLTAGS().Shader_ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
+    glUniformMatrix4fv(getOPENGLTAGS().Shader_ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
+    glUniformMatrix4fv(getOPENGLTAGS().Shader_ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
 
     // Bind our texture in Texture Unit 0
     glActiveTexture(GL_TEXTURE0);
@@ -121,7 +123,7 @@ void SuzanneClass::updateMVPaccordingToPressKeys()
 void SuzanneClass::draw()
 {
     updateMVPaccordingToPressKeys(); // da mashkok fi mkano lesa
-    generateAndBindBuffers();
+    //generateAndBindBuffers();
     sendDatatoBuffers();
 
     // Draw the triangles !

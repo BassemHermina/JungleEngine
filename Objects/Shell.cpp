@@ -30,7 +30,8 @@ ShellClass::ShellClass()
     //these belongs to contol.cpp bas ana ha3ml wa7da zyha we hyb2a fiha el projection wel view matrices bto3 el world
     // Projection and view are global , laken model fi mnha fi kol wa7ed
     cout << "done" <<endl;
-
+    generateAndBindBuffers();
+    sendDatatoBuffers();
 }
 
 void ShellClass::generateAndBindBuffers()
@@ -55,6 +56,9 @@ void ShellClass::sendDatatoBuffers()
     glUniformMatrix4fv(getOPENGLTAGS().Shader_MVPMatrixID, 1, GL_FALSE, &MVP[0][0]);
     glUniformMatrix4fv(getOPENGLTAGS().Shader_ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
     glUniformMatrix4fv(getOPENGLTAGS().Shader_ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
+    //!BH Bassem lamma bansa dol byb2a el gesm bylef bs el eda2a ka2enaha sabta bnsbalo
+    //! 3ashan el normals el 3leh asln btt7sb mn M vector, wana m5ali el M el awlani lw mb3atesh dol fa bl nesba
+    //! lel light wel specular hwa mat7raksh
 
     // Bind our texture in Texture Unit 0
     glActiveTexture(GL_TEXTURE0);
@@ -119,7 +123,7 @@ void ShellClass::updateMVPaccordingToPressKeys()
 void ShellClass::draw()
 {
     updateMVPaccordingToPressKeys(); // da mashkok fi mkano lesa
-    generateAndBindBuffers();
+    //generateAndBindBuffers();
     sendDatatoBuffers();
 
     // Draw the triangles !

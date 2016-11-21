@@ -15,7 +15,7 @@
 int initializeGL();
 void lightControls();
 Handles OPENGLTAGS;
-float x = 10;
+float x = 200;
 
 using namespace std;
 
@@ -46,7 +46,7 @@ int main(void)
     ///
 
     glm::mat4 RotationMatrix7 = eulerAngleYXZ(0.0f, 0.0f, 0.0f);//yaw, pitch and roll. Measured in radians
-    glm::mat4 TranslationMatrix7 = translate(mat4(), vec3(3.0f, 10.0f, 1.0f));  //3,4,1
+    glm::mat4 TranslationMatrix7 = translate(mat4(), vec3(3.0f, 2.50f, 1.0f));  //3,4,1
     //! hena el moshkla el 7asla fl render , el alwan wel eda2a darba keda
     //! 3ashan el mfrod en el cube keda ben el objects asln wel noor , f lw 7rakt el object b3id btrga3 el eda2a tabi3ya
 
@@ -59,7 +59,7 @@ int main(void)
 
     glm::mat4 RotationMatrix0 = eulerAngleYXZ(0.0f, 0.0f, 0.0f);//yaw, pitch and roll. Measured in radians
     glm::mat4 TranslationMatrix0 = translate(mat4(), vec3(0.0f, 0.0f, 0.0f));
-    glm::mat4 ScalingMatrix0 = scale(mat4(), vec3(6.0f, 0.02f, 6.0f));
+    glm::mat4 ScalingMatrix0 = scale(mat4(), vec3(10.0f, 0.4f, 6.0f));
     glm::mat4 Model0 = TranslationMatrix0*RotationMatrix0 * ScalingMatrix0;//order of multiplication is important (try different values above and different order of multiplicationn
     Plane.ModelMatrix = Model0 ;
 
@@ -122,7 +122,7 @@ int main(void)
         Suzanne6.draw();
         Plane.draw();
         Shell.draw();
-        lightplaceCube.draw();
+        //lightplaceCube.draw();
 
 
         lightControls();
@@ -222,13 +222,15 @@ int initializeGL()
 
 
 
-    glm::vec3 lightPos = glm::vec3(3,2,1);
+    glm::vec3 lightPos = glm::vec3(0,40,0);  // only effects the shadow direction
+                                               // it don't effect light intensity , check fragment shader edited
     OPENGLTAGS.Shader_LightID = glGetUniformLocation(OPENGLTAGS.Shader_ProgramID, "LightPosition_worldspace");
     glUniform3f(OPENGLTAGS.Shader_LightID, lightPos.x, lightPos.y, lightPos.z);
 
-    glUniform1f(OPENGLTAGS.Shader_p,120);
 
-    int x = 10;
+
+    glUniform1f(OPENGLTAGS.Shader_p,x);
+
     glShadeModel(GL_SMOOTH); //bassem edit
 }
 
@@ -242,9 +244,9 @@ Handles getOPENGLTAGS ()
 void lightControls(){
 
     if ( glfwGetKey( GLFW_KEY_LSHIFT ) == GLFW_PRESS)
-        x = x + 0.2;
+        x = x + 3;
     if ( glfwGetKey( GLFW_KEY_LCTRL ) == GLFW_PRESS)
-        x = x - 0.2;
+        x = x -3;
     glUniform1f(OPENGLTAGS.Shader_p,x);
 
 }

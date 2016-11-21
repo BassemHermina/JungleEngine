@@ -274,10 +274,11 @@ extern "C" {
 #define GLFW_KEY_LSUPER       (GLFW_KEY_SPECIAL+67)
 #define GLFW_KEY_RSUPER       (GLFW_KEY_SPECIAL+68)
 #define GLFW_KEY_MENU         (GLFW_KEY_SPECIAL+69)
-#define GLFW_KEY_w             167
-#define GLFW_KEY_a             97
-#define GLFW_KEY_s             115
-#define GLFW_KEY_d             100
+#define GLFW_KEY_w             87  // i define this number here according to GLFW input key reference
+                                   // then i define the return case , find usages of this symbol to find the case return function
+#define GLFW_KEY_a             65
+#define GLFW_KEY_s             83
+#define GLFW_KEY_d             68
 //they are Dec code for the letters
 #define GLFW_KEY_LAST         GLFW_KEY_MENU
 

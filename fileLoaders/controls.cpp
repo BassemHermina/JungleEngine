@@ -87,15 +87,15 @@ void computeMatricesFromInputs(){
 		position += direction * deltaTime * speed;
 	}
 	// Move backward
-	if (glfwGetKey( GLFW_KEY_DOWN ) == GLFW_PRESS){
+    if (glfwGetKey( GLFW_KEY_DOWN ) || glfwGetKey( GLFW_KEY_s ) == GLFW_PRESS){
 		position -= direction * deltaTime * speed;
 	}
 	// Strafe right
-	if (glfwGetKey( GLFW_KEY_RIGHT ) == GLFW_PRESS){
+    if (glfwGetKey( GLFW_KEY_RIGHT ) || glfwGetKey( GLFW_KEY_d ) == GLFW_PRESS){
 		position += right * deltaTime * speed;
 	}
 	// Strafe left
-	if (glfwGetKey( GLFW_KEY_LEFT ) == GLFW_PRESS){
+    if (glfwGetKey( GLFW_KEY_LEFT ) || glfwGetKey( GLFW_KEY_a ) == GLFW_PRESS){
 		position -= right * deltaTime * speed;
 	}
     if (glfwGetKey( GLFW_KEY_RSHIFT ) == GLFW_PRESS){

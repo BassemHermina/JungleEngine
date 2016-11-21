@@ -30,7 +30,8 @@ PlaneClass::PlaneClass()
     //these belongs to contol.cpp bas ana ha3ml wa7da zyha we hyb2a fiha el projection wel view matrices bto3 el world
     // Projection and view are global , laken model fi mnha fi kol wa7ed
     cout << "done" <<endl;
-
+    generateAndBindBuffers();
+    sendDatatoBuffers();
 }
 
 void PlaneClass::generateAndBindBuffers()
@@ -119,7 +120,7 @@ void PlaneClass::updateMVPaccordingToPressKeys()
 void PlaneClass::draw()
 {
     updateMVPaccordingToPressKeys(); // da mashkok fi mkano lesa
-    generateAndBindBuffers();
+    //generateAndBindBuffers();
     sendDatatoBuffers();
 
     // Draw the triangles !

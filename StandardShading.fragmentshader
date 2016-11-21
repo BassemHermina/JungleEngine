@@ -29,13 +29,31 @@ void main(){
 	//el effect el ana 3aizo el flat da , el ambient fih = 1 bayen
 	vec3 MaterialSpecularColor = vec3(0.1,0.1,0.1);
 
+	//// Distance to the light
+	////float distance = length( LightPosition_worldspace - Position_worldspace );
+
+	// bassem edit 1 directional light
 	// Distance to the light
-	float distance = length( LightPosition_worldspace - Position_worldspace );
+	// all fragmenst should have only vertical distance to the light
+	//assumed that the only important distance is the vertical distance ( light is above
+	// another idea is that directional light don't depend on distance
+	// mthya2li da (el distance el sabet ) habaawaz el shadow mapping keda
+	float distance = 20 ; //ai rakam sabet
 
 	// Normal of the computed fragment, in camera space
 	vec3 n = normalize( Normal_cameraspace );
 	// Direction of the light (from the fragment to the light)
+
+	////Direction of the light (from the fragment to the light)
 	vec3 l = normalize( LightDirection_cameraspace );
+	// this causes softer shdow on the object itself
+	
+	//bassem edit 2 to turn into directional light
+	// all fragments should have same direction of light
+	//LightDirection_cameraspace;// =;
+	//vec3 l = LightPosition_worldspace.xyz;
+	//this causes hard edged shadow on the objects ( stylized ) 	
+
 	// Cosine of the angle between the normal and the light direction, 
 	// clamped above 0
 	//  - light is at the vertical of the triangle -> 1
