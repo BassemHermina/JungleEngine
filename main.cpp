@@ -17,11 +17,10 @@
 #include "helpers/Shadows.hpp"
 
 int initializeGL();
-void lightControls();
+void lightControls_Phong();
 float x = 200;
-void initialPlacingObjects();
 using namespace std;
-
+void renderfromTexture(GLuint TextureIDtobesampled);
 
 int main(void)
 {
@@ -35,15 +34,13 @@ int main(void)
     Shader * simpleDepthMap;
     simpleDepthMap = ShaderLibrary::GetsimpleDepthShader();
 
-    ///////////////////////////////////////
-    /// \brief nrAttributes
-    /// Offline LearnOpenGL.pdf tutorials
+    Shader * TextToScreen;
+    TextToScreen = ShaderLibrary::GetTexToScreen();
+
     GLint nrAttributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
     std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
-    ///////////////////////////////////////
 
-    cout << PhongShader->Program() << endl;
     //BH: the GameObjects_Bucket is the Datastructure that holds all the game objects with inherit from monobehavior
     hierarchy *GameObjects_Bucket= new hierarchy;
 
@@ -73,11 +70,6 @@ int main(void)
     // note: lma b5ali el ambient a2al btb2a eda2a tab3ya shoia aktr , el hwa lma adalemha 5ales el dnia btswad , msh zy di keda , kol
     //ma3ali ambient btb2a flat shading
 
-
-    //////////////////////////
-    //Shadow mapping
-
-
     // light blue background
     glClearColor(0.0f, 0.682352f, 0.933333f, 0.0f); //yaslaam yaro7 5altak :D
     // msh bya5od fraction "238/255" bs bya5od el float bta3ha "0.93333f" bs
@@ -91,21 +83,54 @@ int main(void)
     glEnable(GL_CULL_FACE);
 
     // must be created before shadowmapping
-//    Shadow ShadowObject;  //calls the constructor only till now
+    Shadow ShadowObject;
+    ShadowObject.initialize();  //calls the constructor only till now
     // ana gowa 3amalt load lel shader 5las, we foo2 5ales afashto
 
-    do{
-        // Clear the screen
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glm::mat4 biasMatrix(
+    0.5, 0.0, 0.0, 0.0,
+    0.0, 0.5, 0.0, 0.0,
+    0.0, 0.0, 0.5, 0.0,
+    0.5, 0.5, 0.5, 1.0
+    );
 
-        // Use our shader
+
+    do{
+        ///RenderShadowMap to FB////
+        //the framebuffer must be bind before any glFunction!!!!!!!!!!!!!!!
+         glBindFramebuffer(GL_FRAMEBUFFER, ShadowObject.fb);
+        glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );// da mlosh lazma, hwa keda keda 3aref hya5od a mn el rasma  , el background mlhash lazma
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //glEnableVertexAttribArray(simpleDepthMap->Attribute("vertexPosition_modelspace"));
+        glViewport(0,0,1024,1024);
+        simpleDepthMap->Use();
+        GameObjects_Bucket->drawDepthMap();
+
+        ///RenderScene to screen////
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);  //return back to default buffer which is rendered to the screen
         PhongShader->Use();
-//       simpleDepthMap->Use();
+        glViewport(0,0,1024,768);
+        glClearColor(0.0f, 0.682352f, 0.933333f, 0.0f); //yaslaam yaro7 5altak :D
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //send texture to framebuffer
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, ShadowObject.texture);
+        PhongShader->SendUniform("shadowMap", 1);
+        PhongShader->SendUniform("DepthVP", ShadowObject.depthVP); // el view projection da sabet , 3ashan ana msh b3'aiar mkan el light
+        PhongShader->SendUniform("BiasMatrix", biasMatrix);
+
+        GameObjects_Bucket->drawPhong();
+        //renderfromTexture(depthTexture);
 
         /////////////////////////////////////
-        GameObjects_Bucket->drawPhong();
+        //lw Un-commented el satr da by3ml error case 7lw, bysa3ed 3l fehm
+ //       GameObjects_Bucket->drawDepthMap();
 
-        lightControls();
+        lightControls_Phong();
+
+        //endertoTexture(Suzanne2.getTextureSamplerIDtoBind());
+
+
 
         // Swap buffers
         glfwSwapBuffers();
@@ -171,7 +196,7 @@ int initializeGL()
     PhongShader->Use();
 
     // switching the order caused some color distortions!
-//    PhongShader.Use();
+    /// 3ashan lazem a3ml use lel shader el awel akid abl mab3at ai 7aga , ya 7mar !
     GLint currentProgram = 0; //dummy value
     glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgram);
     cout << currentProgram << endl;
@@ -183,15 +208,96 @@ int initializeGL()
 
 }
 
-void lightControls(){
+void lightControls_Phong(){
 
     Shader * PhongShader;
     PhongShader = ShaderLibrary::GetPhongShader();
+    PhongShader->Use();
 
     if ( glfwGetKey( GLFW_KEY_LSHIFT ) == GLFW_PRESS)
         x = x + 3;
     if ( glfwGetKey( GLFW_KEY_LCTRL ) == GLFW_PRESS)
         x = x -3;
     PhongShader->SendUniform("LightPower", x);
+
+}
+
+
+void renderfromTexture(GLuint TextureIDtobesampled)
+{
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);  //return back to default buffer which is rendered to the screen
+    glViewport(0,0,1024,768);
+    glClearColor(0.0f, 0.682352f, 0.933333f, 0.0f); //yaslaam yaro7 5altak :D
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    static const GLfloat g_quad_vertex_buffer_data[] = {
+        -1.0f, -1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        1.0f,  1.0f, 0.0f,
+    };
+
+    static const GLfloat g_quad_uv_buffer_data[] = {
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        0.0f, 0.0f,
+        0.0f, 0.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f
+    };
+
+    Shader * TextToScreen;
+    TextToScreen = ShaderLibrary::GetTexToScreen();
+    TextToScreen->LoadShader("textureShader", "TexturetoScreen.vertexshader", "TexturetoScreen.fragmentshader");
+
+    TextToScreen->Use();
+
+    //it uses gltexture 2
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, TextureIDtobesampled);
+    TextToScreen->SendUniform("myTextureSampler", 2);
+    glActiveTexture(GL_TEXTURE0);
+
+    GLuint quad_vertexbuffer;
+    glGenBuffers(1, &quad_vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
+
+    GLuint quad_uvbuffer;
+    glGenBuffers(1, &quad_uvbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, quad_uvbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_uv_buffer_data), g_quad_uv_buffer_data, GL_STATIC_DRAW);
+
+    // 1rst attribute buffer : vertices
+    glEnableVertexAttribArray(TextToScreen->Attribute("vertex_screenspace"));
+    glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+    glVertexAttribPointer(
+        TextToScreen->Attribute("vertex_screenspace"),  // The attribute we want to configure
+        3,                            // size
+        GL_FLOAT,                     // type
+        GL_FALSE,                     // normalized?
+        0,                            // stride
+        (void*)0                      // array buffer offset
+    );
+
+    // 2nd attribute buffer : UVs
+    glEnableVertexAttribArray(TextToScreen->Attribute("vertexUV"));
+    glBindBuffer(GL_ARRAY_BUFFER, quad_uvbuffer);
+    glVertexAttribPointer(
+        TextToScreen->Attribute("vertexUV"),                   // The attribute we want to configure
+        2,                            // size : U+V => 2
+        GL_FLOAT,                     // type
+        GL_FALSE,                     // normalized?
+        0,                            // stride
+        (void*)0                      // array buffer offset
+    );
+
+    // Draw the triangles !
+    glDrawArrays(GL_TRIANGLES, 0, 6); // 12*3 indices starting at 0 -> 12 triangles
+    glDisableVertexAttribArray(TextToScreen->Attribute("vertex_screenspace"));
+    glDisableVertexAttribArray(TextToScreen->Attribute("vertexUV"));
 
 }

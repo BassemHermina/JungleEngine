@@ -13,14 +13,15 @@ uniform mat4 model;
 
 varying float vDepth;
 
-uniform float depthMVP;
+float LinearizeDepth (float depth);
 
 void main(){
 
     vec4 positionClipCoord = depthVP * model * vec4(vertexPosition_modelspace,1);
- 	//vec4 positionClipCoord = depthMVP * vec4(vertexPosition_modelspace,1);
  	gl_Position =  positionClipCoord;
- 	float zBuff = positionClipCoord.z / positionClipCoord.w;  ////Z-buffer between -1 and 1
-	vDepth=0.5+zBuff*0.5; //between 0 and 1\n\
 
+ 	float zBuff = positionClipCoord.z / positionClipCoord.w;  ////Z-buffer between -1 and 1
+	//vDepth=0.5+zBuff*0.5; //between 0 and 1 
+	//vDepth=positionClipCoord.z*0.5 + 0.5;
+	vDepth = (positionClipCoord.z);
 }

@@ -50,13 +50,19 @@ void Shader::Use() const {
     //if (IsInUse()) cout << "was in use" <<endl;  // for debugging purposes
     if(!IsInUse())
     {
-        cout << "wasn't in use " << endl;
+        //cout << "wasn't in use " << endl;
         glUseProgram(Program());
     }
-
     //Write here any "tazbitat" for the shader:
     // like: glDrawBuffer(GL_NONE) ,glSmoothShading( .. ba bla) ,,....
     //  7agat global keda
+
+
+//    cout << "current Program number in shader object : " << Program() << " and current programID : " ;
+//    GLint currentProgram = 0; //dummy value
+//    glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgram);
+//    cout << currentProgram << endl;
+
 
 }
 
@@ -81,8 +87,7 @@ void Shader::Link() {
 GLuint Shader::Uniform(const char * uniformName) const {
 
     GLuint uniform = glGetUniformLocation(Program(), uniformName);
-
-    if(uniform < 0) {
+    if(uniform < 0 || uniform > 100000) {
         cout << "Uniform variable not found (" + name + ") : ";
         cout << uniformName << endl;
     }
@@ -93,7 +98,7 @@ GLuint Shader::Uniform(const char * uniformName) const {
 GLuint Shader::Attribute(const char * attributeName) const{
     GLuint attrib = glGetAttribLocation(Program(), attributeName);
 
-    if(attrib < 0) {
+    if(attrib < 0 || attrib > 1000) {
         cout << "Attribute variable not found in (" + name + ") : ";
         cout << attributeName << endl;
     }
@@ -103,21 +108,45 @@ GLuint Shader::Attribute(const char * attributeName) const{
 void Shader::SendUniform(const char * name, glm::mat4 mat) {
     if(IsInUse())
     glUniformMatrix4fv(Uniform(name), 1, GL_FALSE, &mat[0][0]);
+    if(!IsInUse())
+    {
+        cout << "can't send Uniform data, Shader not active (";
+        cout << name << endl;
+        cout << ")";
+    }
 }
 
 void Shader::SendUniform(const char * name, glm::mat3 mat) {
     if(IsInUse())
     glUniformMatrix3fv(Uniform(name), 1, GL_FALSE,  &mat[0][0]);
+    if(!IsInUse())
+    {
+        cout << "can't send Uniform data, Shader not active (";
+        cout << name << endl;
+        cout << ")";
+    }
 }
 
 void Shader::SendUniform(const char * name, float value) {
     if (IsInUse())
     glUniform1f(Uniform(name), value);
+    if(!IsInUse())
+    {
+        cout << "can't send Uniform data, Shader not active (";
+        cout << name << endl;
+        cout << ")";
+    }
 }
 
 void Shader::SendUniform(const char * name, int value) {
     if(IsInUse())
     glUniform1i(Uniform(name), value);
+    if(!IsInUse())
+    {
+        cout << "can't send Uniform data, Shader not active (";
+        cout << name << endl;
+        cout << ")";
+    }
 }
 
 //void Shader::SendUniform(string name, Texture* texture) {
@@ -128,16 +157,34 @@ void Shader::SendUniform(const char * name, int value) {
 void Shader::SendUniform(const char * name, glm::vec2 vec) {
     if(IsInUse())
     glUniform2f(Uniform(name), vec[0], vec[1]);
+    if(!IsInUse())
+    {
+        cout << "can't send Uniform data, Shader not active (";
+        cout << name << endl;
+        cout << ")";
+    }
 }
 
 void Shader::SendUniform(const char * name, glm::vec3 vec) {
     if (IsInUse())
     glUniform3f(Uniform(name), vec[0], vec[1], vec[2]);
+    if(!IsInUse())
+    {
+        cout << "can't send Uniform data, Shader not active (";
+        cout << name << endl;
+        cout << ")";
+    }
 }
 
 void Shader::SendUniform(const char * name, glm::vec4 vec) {
     if(IsInUse())
     glUniform4f(Uniform(name), vec[0], vec[1], vec[2], vec[3]);
+    if(!IsInUse())
+    {
+        cout << "can't send Uniform data, Shader not active (";
+        cout << name << endl;
+        cout << ")";
+    }
 }
 
 

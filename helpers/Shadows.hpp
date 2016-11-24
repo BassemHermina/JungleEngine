@@ -48,6 +48,7 @@ public:
     void RenderShadowMap();
     void ConfigureShaderAndMatrices_ortho();
     void RenderScene();
+    void initialize();
 
 
 };

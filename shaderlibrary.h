@@ -23,6 +23,10 @@ class ShaderLibrary {
         static Shader simpleDepthShader;
         static Shader * GetsimpleDepthShader();
 
+        //TextureToScreen
+        static Shader TexToScreen;
+        static Shader * GetTexToScreen();
+
 
 
         void AddShader(string shaderName, Shader * shader);

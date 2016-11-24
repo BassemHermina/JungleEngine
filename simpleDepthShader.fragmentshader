@@ -5,7 +5,7 @@ varying float vDepth;
 
 void main(){
     // Not really needed, OpenGL does it anyway
-    // fragmentdepth = gl_FragCoord.z;
+   // gl_FragDepth = 1.0;
     //gl_FragColor.rgb = vec3(fragdepth);
     gl_FragColor = vec4(vDepth);
     

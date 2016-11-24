@@ -1,0 +1,12 @@
+#version 120
+
+// In data
+varying vec2 var_vertexUV; //texture to screen
+uniform sampler2D myTextureSampler;
+
+void main(){
+    
+    	gl_FragColor.rgb = texture2D( myTextureSampler, var_vertexUV ).rgb;
+
+
+}

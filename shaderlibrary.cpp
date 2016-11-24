@@ -49,6 +49,15 @@ Shader * ShaderLibrary::GetsimpleDepthShader()
 }
 
 
+Shader ShaderLibrary::TexToScreen;
 
+Shader * ShaderLibrary::GetTexToScreen()
+{
+    return  &ShaderLibrary::TexToScreen;
+}
+
+
+
+//TexToScreen
 
 

@@ -32,6 +32,14 @@ SuzanneClass::SuzanneClass()
 //    updateMVP();
     generateAndBindBuffers();
 
+
 }
+
+GLuint SuzanneClass::getTextureSamplerIDtoBind()
+{
+    return getTextureIDtoBind();
+}
+
+
 
 

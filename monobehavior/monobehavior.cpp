@@ -17,6 +17,10 @@ bool monobehaviorClass::update(){
     cout<<"This is not supposed to be seen, error in inheretence \n";
 }
 
+GLuint monobehaviorClass::getTextureIDtoBind()
+{
+    return Texture;
+}
 
 void monobehaviorClass::generateAndBindBuffers()
 {
@@ -41,27 +45,19 @@ void monobehaviorClass::sendDatatoBuffers_Phong()
     PhongShader = ShaderLibrary::GetPhongShader();
     PhongShader->Use();
 
-//    Shader * simpleDepthShader;
-//    simpleDepthShader = ShaderLibrary::GetsimpleDepthShader();
-//    simpleDepthShader->Use();
-
     // Send our transformation to the currently bound shader,
     // in the "MVP" uniform
-
     PhongShader->SendUniform("MVP", this->MVP);
     PhongShader->SendUniform("M", this->ModelMatrix);
     PhongShader->SendUniform("V", this->ViewMatrix);
-
-//    //mtnsash tb3at da
-//    simpleDepthShader->SendUniform("model", ModelMatrix);
-//   // MVP = ProjectionMatrix * ViewMatrix;
-//    //simpleDepthShader->SendUniform("depthVP", this->MVP);
 
     // Bind our texture in Texture Unit 0
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this->Texture);
     // Set our "myTextureSampler" sampler to user Texture Unit 0
     PhongShader->SendUniform("myTextureSampler", 0);
+
+
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(PhongShader->Attribute("vertexPosition_modelspace"));
     glBindBuffer(GL_ARRAY_BUFFER, this->vertexbuffer);
@@ -73,18 +69,6 @@ void monobehaviorClass::sendDatatoBuffers_Phong()
         0,                            // stride
         (void*)0                      // array buffer offset
     );
-
-//    // 1rst attribute buffer : vertices
-//    glEnableVertexAttribArray(simpleDepthShader->Attribute("vertexPosition_modelspace"));
-//    glBindBuffer(GL_ARRAY_BUFFER, this->vertexbuffer);
-//    glVertexAttribPointer(
-//        simpleDepthShader->Attribute("vertexPosition_modelspace"),  // The attribute we want to configure
-//        3,                            // size
-//        GL_FLOAT,                     // type
-//        GL_FALSE,                     // normalized?
-//        0,                            // stride
-//        (void*)0                      // array buffer offset
-//    );
 
     // 2nd attribute buffer : UVs
     glEnableVertexAttribArray(PhongShader->Attribute("vertexUV"));
@@ -172,7 +156,9 @@ void monobehaviorClass::updateMVP_Depth()
  //   this->ProjectionMatrix = glm::ortho(-10.0f, 10.0f, -7.5f, 7.5f, -10.0f, 100.0f);
 
     //makan matrix el orthogonal da we tolo we keda , hy3mli mshakel ktir fi 7tat ktir
-    ///5ali balak en el gwa el SHADOW OBJECT mo5talef 3n da, we fl debugg ana bst5dem da
+    ///5ali balak en el gwa el SHADOW OBJECT mo5talef 3n da, !!! we da 3'alat
+    /// el mfrod asta5dem fl 7esabat el gowa el shadow object
+    /// we 3'aleban b2a keda ab3to mn l main b2a msh gowa , da sabet el mfrod hna , el VP bas y3ni
     this->ProjectionMatrix = glm::ortho(-20.0f, 20.0f, -15.0f, 15.0f, -10.0f, 30.0f);
     this->ViewMatrix =  glm::lookAt(vec3(05,10,10), glm::vec3(0.0f, 0.0f, 0.0001f), glm::vec3(0.0, 1.0, 0.0));
 

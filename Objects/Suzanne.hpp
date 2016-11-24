@@ -22,6 +22,7 @@ public:
     SuzanneClass();
     const char* fileLocation;
     const char* textureLocation;
+    GLuint getTextureSamplerIDtoBind();
 
 };
 

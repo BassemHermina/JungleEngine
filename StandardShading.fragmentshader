@@ -7,6 +7,7 @@ varying vec3 Normal_cameraspace;
 varying vec3 EyeDirection_cameraspace;
 varying vec3 LightDirection_cameraspace;
 
+
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
 uniform mat4 MV;
@@ -14,12 +15,24 @@ uniform vec3 LightPosition_worldspace;
 uniform float LightPower;
 uniform float r; //da el ana 3mlto (bassem) 3ashan n3'aiar ambient el red , we el bya5do mn hna , el GLuint rr =glGetUniformLocation(programID, "r"); el fi el cpp
 uniform float g;
-//da el ana 3mlto (bassem) 3ashan n3'aiar ambient el green , we el bya5do mn hna , el GLuint rr =glGetUniformLocation(programID, "g"); el fi el cpp
 
+uniform sampler2D shadowMap;
+varying vec4 ShadowCoord;
 
 float LinearizeDepth (float depth);
 
 void main(){
+
+	//Shadow mapping calc.s//
+	float visibility = 1.0;
+	//el satr da el debug el fahmni en l texture fiha 7aga 3'alat
+	//3ashan bayn keda en kol el values el fi el texture bt2ol nafs el rakam, 
+	//fa lma bkarenha b rakm sabet kolha btt7rak m3aia 
+	//if ( texture2D( shadowMap, ShadowCoord.xy ).z+0.6  <  ShadowCoord.z)
+	if ( texture2D( shadowMap, ShadowCoord.xy ).z  <  ShadowCoord.z)
+	{
+   		visibility = 0.0;
+	}
 
 	// Light emission properties
 	// You probably want to put them as uniforms
@@ -78,9 +91,9 @@ void main(){
 		// Ambient : simulates indirect lighting
 		MaterialAmbientColor +
 		// Diffuse : "color" of the object
-		MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
+		visibility *  MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
 		// Specular : reflective highlight, like a mirror
-		MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
+		visibility * MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
 
 	// end of Phong shading model
 	///////////////////////////////////////////////////////////////////////
@@ -90,6 +103,8 @@ void main(){
 	//rendering the scene in colors of depth (black = near)
 	//float depth = LinearizeDepth(gl_FragCoord.z);
 	//gl_FragColor.rgb = vec3(depth);
+
+
 }
 
 float LinearizeDepth(float depth)

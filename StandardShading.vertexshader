@@ -5,6 +5,7 @@ attribute vec3 vertexPosition_modelspace;
 attribute vec2 vertexUV;
 attribute vec3 vertexNormal_modelspace;
 
+
 // Output data ; will be interpolated for each fragment.
 varying vec2 UV;
 varying vec3 Position_worldspace;
@@ -18,11 +19,23 @@ uniform mat4 V;
 uniform mat4 M;
 uniform vec3 LightPosition_worldspace;
 
+uniform mat4 DepthVP;
+uniform mat4 BiasMatrix;
+
+varying vec4 ShadowCoord;
+
 void main(){
+
+	mat4 DepthMVP = DepthVP * M;
+	mat4 depthBiasMVP = BiasMatrix*DepthMVP;
 
 	// Output position of the vertex, in clip space : MVP * position
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
 	
+
+	// Same, but with the light's view matrix
+	ShadowCoord = depthBiasMVP * vec4(vertexPosition_modelspace,1);
+
 	// Position of the vertex, in worldspace : M * position
 	Position_worldspace = (M * vec4(vertexPosition_modelspace,1)).xyz;
 	
