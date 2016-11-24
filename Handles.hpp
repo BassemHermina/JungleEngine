@@ -23,9 +23,6 @@ struct Handles {
 
     GLuint Shader_LightID; // = glGetUniformLocation(programID, "LightPosition_worldspace");
 
-    GLuint vertexbuffer;  // TODO . 7ot el buffersw hena , we e3ml bind bas wentra btersem
-    GLuint uvbuffer;
-    GLuint normalbuffer;
 };
 
 Handles getOPENGLTAGS (); //get OPENGLTAGS from main to any other class that don't have access to main but can read this header

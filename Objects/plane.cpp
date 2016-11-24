@@ -29,6 +29,6 @@ PlaneClass::PlaneClass()
     //these belongs to contol.cpp bas ana ha3ml wa7da zyha we hyb2a fiha el projection wel view matrices bto3 el world
     // Projection and view are global , laken model fi mnha fi kol wa7ed
     cout << "done" <<endl;
+//    updateMVP();
     generateAndBindBuffers();
-    sendDatatoBuffers();
 }

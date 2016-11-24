@@ -1,0 +1,14 @@
+#version 120
+
+// Ouput data
+varying float vDepth;
+
+void main(){
+    // Not really needed, OpenGL does it anyway
+    // fragmentdepth = gl_FragCoord.z;
+    //gl_FragColor.rgb = vec3(fragdepth);
+    gl_FragColor = vec4(vDepth);
+    
+    //gl_FragColor = vec4(vDepth, 0,0,1);
+
+}

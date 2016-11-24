@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <vector>
 #include "fileLoaders/controls.hpp"
-#include "Handles.hpp"
 
 // Include GLM
 #include <glm/glm.hpp>
@@ -25,6 +24,8 @@
 
 #include "fileLoaders/objloader.hpp"
 #include "fileLoaders/texture.hpp"
+
+
 
 using namespace std;
 
@@ -61,18 +62,28 @@ public:
     glm::mat4 TranslationMatrix;
     glm::mat4 ScalingMatrix;
 
-    //required functions to view the object
+    ///required functions to view the object
+    ///
     void generateAndBindBuffers();
-    void sendDatatoBuffers();
+    void updateMVP_Phong();
+    void updateMVP_Depth();
+    void updateModelMatrix();
+
+    //using phong shader
+    void sendDatatoBuffers_Phong();
+    void disableAttribsAfterDraw_Phong();
+
+    //using simpleDepthShader
+    void sendDatatoBuffers_Depth();
+    void disableAttribsAfterDraw_Depth();
 
     //after viewing the object ( after calling glDrawArrays )
-    void disableAttribsAfterDraw();
+
 
     //draw the object
-    virtual void draw();
+    virtual void drawPhong();
+    virtual void drawDepthMap();
 
-    void updateMVP();
-    void updateModelMatrix();
 
     void Translate(float x, float y, float z);
     void Rotate(float x, float y, float z);

@@ -1,0 +1,26 @@
+#version 120
+
+
+//lazem a3ml use el awel abl mab3at ai 7aga lel shader!!!!
+
+
+// Input vertex data, different for all executions of this shader.
+attribute vec3 vertexPosition_modelspace;
+
+// Values that stay constant for the whole mesh.
+uniform mat4 depthVP;
+uniform mat4 model;
+
+varying float vDepth;
+
+uniform float depthMVP;
+
+void main(){
+
+    vec4 positionClipCoord = depthVP * model * vec4(vertexPosition_modelspace,1);
+ 	//vec4 positionClipCoord = depthMVP * vec4(vertexPosition_modelspace,1);
+ 	gl_Position =  positionClipCoord;
+ 	float zBuff = positionClipCoord.z / positionClipCoord.w;  ////Z-buffer between -1 and 1
+	vDepth=0.5+zBuff*0.5; //between 0 and 1\n\
+
+}

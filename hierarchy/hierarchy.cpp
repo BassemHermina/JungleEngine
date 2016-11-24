@@ -41,7 +41,7 @@ int hierarchy::init()
     GameObjects[3]->Scale(1.0f, 1.0f, 1.0f);
 
 
-    GameObjects[4]->Translate(6.0f, 4.0f, 10.0f);
+    GameObjects[4]->Translate(6.0f, 4.0f,2.0f);
     GameObjects[4]->Rotate(0.0f, -45.0f, 0.0f);
     GameObjects[4]->Scale(1.0f, 1.0f, 1.0f);
 
@@ -71,9 +71,16 @@ void hierarchy::updateGameObjects()
     }
 }
 
-void hierarchy::draw()
+void hierarchy::drawPhong()
 {
     for(int i=0; i<gameObjectNo; i++){
-            GameObjects[i]->draw();
+            GameObjects[i]->drawPhong();
+    }
+}
+
+void hierarchy::drawDepthMap()
+{
+    for(int i=0; i<gameObjectNo; i++){
+            GameObjects[i]->drawDepthMap();
     }
 }

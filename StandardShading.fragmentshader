@@ -15,6 +15,10 @@ uniform float LightPower;
 uniform float r; //da el ana 3mlto (bassem) 3ashan n3'aiar ambient el red , we el bya5do mn hna , el GLuint rr =glGetUniformLocation(programID, "r"); el fi el cpp
 uniform float g;
 //da el ana 3mlto (bassem) 3ashan n3'aiar ambient el green , we el bya5do mn hna , el GLuint rr =glGetUniformLocation(programID, "g"); el fi el cpp
+
+
+float LinearizeDepth (float depth);
+
 void main(){
 
 	// Light emission properties
@@ -78,4 +82,20 @@ void main(){
 		// Specular : reflective highlight, like a mirror
 		MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
 
+	// end of Phong shading model
+	///////////////////////////////////////////////////////////////////////
+
+
+	//testing the depth fighting and stuff about depth buffer
+	//rendering the scene in colors of depth (black = near)
+	//float depth = LinearizeDepth(gl_FragCoord.z);
+	//gl_FragColor.rgb = vec3(depth);
+}
+
+float LinearizeDepth(float depth)
+{
+	float near = 0.1;
+	float far = 100.0;
+	float z = depth * 2.0 - 1.0; // Back to NDC
+	return (2.0 * near) / (far + near - z * (far - near));
 }

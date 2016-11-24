@@ -69,9 +69,13 @@ add_executable( main
     fileLoaders/controls.hpp
     Objects/plane.cpp
     Objects/plane.hpp
-    Handles.hpp
-    initializeWorld.cpp
-    initializeWorld.hpp
+    Shaders.cpp
+    Shaders.hpp
+    shaderlibrary.cpp
+    shaderlibrary.h
+    helpers/Shadows.cpp
+    helpers/Shadows.hpp
+
 
 )
 target_link_libraries(main

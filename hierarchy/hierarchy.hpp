@@ -17,7 +17,8 @@ public:
     int init();
     bool add(monobehaviorClass * obj);
     void updateGameObjects();
-    void draw();
+    void drawPhong();
+    void drawDepthMap();
 
 };
 

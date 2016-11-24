@@ -28,10 +28,15 @@ float verticalAngle = 0.0f;
 // Initial Field of View
 float initialFoV = 45.0f;
 
-float speed = 12.0f; // 3 units / second
-float mouseSpeed = 0.002f;
+float speed = 14.0f; // 3 units / second
+float mouseSpeed = 0.003f;
 int xvirtual =  1042/2;
 int yvirtual =  768/2;
+int xpos= 1042/2;
+int ypos=768/2;
+
+int counterX = 0;
+int counterY = 0;
 
 void computeMatricesFromInputs(){
 
@@ -43,24 +48,58 @@ void computeMatricesFromInputs(){
 	float deltaTime = float(currentTime - lastTime);
 
 	// Get mouse position
-	int xpos, ypos;
+
+//    int state = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
+//    if (state == GLFW_PRESS)
     glfwGetMousePos(&xpos, &ypos);
+
+/////////////////////////////
+    ///  code to allow 3d rotation of mouse
+
+    if (xpos > 1018)
+    {
+        counterX++;
+        glfwSetMousePos(8, ypos);
+    }
+
+    if(ypos > 760)
+    {
+        counterY++;
+        glfwSetMousePos(xpos, 5);
+    }
+
+    if (xpos < 6)
+    {
+        counterX--;
+        glfwSetMousePos(1016, ypos);
+    }
+    if (ypos < 4)
+    {
+        counterY--;
+        glfwSetMousePos(xpos, 758);
+    }
+
+
+    xvirtual = xpos + 1023 * counterX;
+    yvirtual = ypos + 760 * counterY;
+/////////////////////////////////////////////
 
     //const float mouseSensitivity = 0.1f;
     // double cursorX, cursorY;
     // Reset mouse position for next frame
     //BS: but it causes lag in mouse viewing
 
-    if (xpos != 1024/2) xvirtual = xvirtual + (xpos - 1024/2);
-    if (ypos != 768/2) yvirtual = yvirtual + (ypos - 768/2);
+//    if (xpos!= 1042/2) xvirtual += (xpos - 1024/2);
+//    if (ypos!= 768/2) yvirtual += (ypos - 768/2);
 
-    glfwSetMousePos(1024/2,768/2);
+    //if (xpos > 800 || ypos > 600) glfwSetMousePos(1024/2, 768/2);
+
 	// Reset mouse position for next frame
 	// EDIT : Doesn't work on Mac OS, hence the code below is a bit different from the website's
-	//glfwSetMousePos(1024/2, 768/2);
+    //glfwSetMousePos(1024/2, 768/2);
 
 	// Compute new orientation
-    horizontalAngle = 3.14f + mouseSpeed * float(1024/2 - xvirtual );
+    horizontalAngle = 3.14f + mouseSpeed * float(1024/2 - xvirtual );   // use xvirtual/yvirtual instead of xpos to allow mouse to rotate freely
     verticalAngle   = mouseSpeed * float( 768/2 - yvirtual );
 
 
@@ -113,7 +152,7 @@ void computeMatricesFromInputs(){
 	ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 100.0f);
 	// Camera matrix
 	ViewMatrix       = glm::lookAt(
-								position,           // Camera is here
+                                position,           // Camera is here
                                 position+direction, // and looks here : at the same position, plus "direction"
 								up                  // Head is up (set to 0,-1,0 to look upside-down)
 						   );
