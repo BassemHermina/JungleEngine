@@ -57,6 +57,13 @@ Shader * ShaderLibrary::GetTexToScreen()
 }
 
 
+Shader ShaderLibrary::cubeMapShader;
+
+Shader * ShaderLibrary::GetcubeMapShader()
+{
+    return  &ShaderLibrary::cubeMapShader;
+}
+
 
 //TexToScreen
 

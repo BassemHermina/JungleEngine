@@ -75,6 +75,8 @@ add_executable( main
     shaderlibrary.h
     helpers/Shadows.cpp
     helpers/Shadows.hpp
+    SkyBoxes/SkyBox.cpp
+    SkyBoxes/SkyBox.hpp
 
 
 )

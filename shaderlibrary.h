@@ -27,6 +27,10 @@ class ShaderLibrary {
         static Shader TexToScreen;
         static Shader * GetTexToScreen();
 
+        //cubeMapShader
+        static Shader cubeMapShader;
+        static Shader * GetcubeMapShader();
+
 
 
         void AddShader(string shaderName, Shader * shader);

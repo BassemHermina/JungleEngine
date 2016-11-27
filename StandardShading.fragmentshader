@@ -23,20 +23,31 @@ float LinearizeDepth (float depth);
 
 void main(){
 
-	//Shadow mapping calc.s//
-	float visibility = 1.0;
-	//el satr da el debug el fahmni en l texture fiha 7aga 3'alat
-	//3ashan bayn keda en kol el values el fi el texture bt2ol nafs el rakam, 
-	//fa lma bkarenha b rakm sabet kolha btt7rak m3aia 
-	//if ( texture2D( shadowMap, ShadowCoord.xy ).z+0.6  <  ShadowCoord.z)
-	if ( texture2D( shadowMap, ShadowCoord.xy ).z  <  ShadowCoord.z)
-	{
-   		visibility = 0.0;
-	}
+
+
+	vec2 poissonDisk[16] = vec2[](
+    vec2( -0.94201624, -0.39906216 ),
+    vec2( 0.94558609, -0.76890725 ),
+    vec2( -0.094184101, -0.92938870 ),
+    vec2( 0.34495938, 0.29387760 ),
+    vec2( -0.280280, 0.73073 ),
+    vec2( -0.5105105, 0.060060 ),
+    vec2( -0.02002, 0.080080 ),
+    vec2( 0.3803803, 0.5015045),
+    vec2( 0.992978, -0.22066116 ),
+    vec2(0.25075229, -0.160481 ),
+    vec2( 0.77231695001, -0.0200600 ),
+    vec2( -0.35105, -0.64192570 ),
+    vec2( -0.88264624, 0.05015016 ),
+    vec2( 0.8024072, 0.712136405 ),
+    vec2( -0.9929789301, -0.92938870 ),
+    vec2( 0.962888638, 0.29387760 )
+    );
+
 
 	// Light emission properties
 	// You probably want to put them as uniforms
-	vec3 LightColor = vec3(1.0,1.0,0.77642);
+	vec3 LightColor = vec3(0.9,0.9,1.0); //light blue
 
 	
 	// Material properties
@@ -87,6 +98,42 @@ void main(){
 	//  - Looking elsewhere -> < 1
 	float cosAlpha = clamp( dot( E,R ), 0,1 );
 	
+
+
+	////////////////////////////////////////
+	//Shadow mapping calc.s//
+	float visibility = 1.0;
+	//el satr da el debug el fahmni en l texture fiha 7aga 3'alat
+	//3ashan bayn keda en kol el values el fi el texture bt2ol nafs el rakam, 
+	//fa lma bkarenha b rakm sabet kolha btt7rak m3aia 
+	//if ( texture2D( shadowMap, ShadowCoord.xy ).z+0.6  <  ShadowCoord.z)
+	
+	//WITHOUT ACNE
+	//float bias = 0.005;
+	// float bias = 0.02*tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
+	// bias = clamp(bias, 0,0.01);
+	// //float visibility = 1.0;
+	// if ( texture2D( shadowMap, ShadowCoord.xy ).z  <  ShadowCoord.z-bias){
+	//   	 visibility = 0.0;
+	// }
+
+	///POISSON SAMPLING
+	float bias = 0.02*tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
+	bias = clamp(bias, 0,0.01);
+	for (int i=0;i<16;i++){
+ 	 	if ( texture2D( shadowMap, ShadowCoord.xy + poissonDisk[i]/800.0 ).z  <  ShadowCoord.z-bias ){
+ 	  		visibility-=0.05;
+ 	 	}
+	}
+
+
+	// //WITH ACNE
+	// if ( texture2D( shadowMap, ShadowCoord.xy ).z  <  ShadowCoord.z)
+	// {
+    //   	visibility = 0.0;
+	// }
+
+
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
 		MaterialAmbientColor +
@@ -103,6 +150,9 @@ void main(){
 	//rendering the scene in colors of depth (black = near)
 	//float depth = LinearizeDepth(gl_FragCoord.z);
 	//gl_FragColor.rgb = vec3(depth);
+
+
+
 
 
 }

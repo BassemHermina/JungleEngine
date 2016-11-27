@@ -45,7 +45,7 @@ public:
     glm::vec3 lightInvDir;
 
     Shadow();
-    void RenderShadowMap();
+    void PreRenderShadowMap();
     void ConfigureShaderAndMatrices_ortho();
     void RenderScene();
     void initialize();

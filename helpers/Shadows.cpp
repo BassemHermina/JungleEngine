@@ -17,8 +17,8 @@ void Shadow::initialize(){
 
     simpleDepthShader->Use();
 
-    SHADOW_WIDTH = 1024;
-    SHADOW_HEIGHT = 1024;
+    SHADOW_WIDTH = 10000;
+    SHADOW_HEIGHT = 10000;
 
     ///ma3rafsh kan fi a fl code 3'alat kol da!!!!!!!!!!!!!
     /// 5adto copy paste esht3'al :/ m3rfshl leeh wla ezay
@@ -29,7 +29,7 @@ void Shadow::initialize(){
     // Depth texture. Slower than a depth buffer, but you can sample it later in your shader
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT16, 1024, 1024, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT32, 2048, 2048, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -103,9 +103,22 @@ Shadow::Shadow()
 //    }
 }
 
-void Shadow::RenderShadowMap(){
-
+void Shadow::PreRenderShadowMap(){
+    //required before rendering objects bucket with simple depth shader
     //implement here when it runs in the main loop
+    Shader * simpleDepthMap;
+    simpleDepthMap = ShaderLibrary::GetsimpleDepthShader();
+
+    ///RenderShadowMap to FB////
+    //the framebuffer must be bind before any glFunction!!!!!!!!!!!!!!!
+    glBindFramebuffer(GL_FRAMEBUFFER, fb);
+    glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );// da mlosh lazma, hwa keda keda 3aref hya5od a mn el rasma  , el background mlhash lazma
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glEnableVertexAttribArray(simpleDepthMap->Attribute("vertexPosition_modelspace"));
+    glViewport(0,0,2048,2048);  // must be same numbers in shadowmap object Texture Image 2D !!!
+    simpleDepthMap->Use();
+    glCullFace(GL_FRONT);
+
 
 
 }

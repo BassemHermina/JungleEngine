@@ -16,9 +16,9 @@ bool SuzanneClass::update()
 SuzanneClass::SuzanneClass()
 {
     //.obj file and .bmp texture file
-    fileLocation = "3dmodels/suzanne.obj";
+    fileLocation = "3dmodels/banana.obj";
     //fileLocation = "cube.obj";
-    textureLocation = "3dmodels/suzanneTexBmp.bmp";
+    textureLocation = "3dmodels/banana_texture.bmp";
     Texture = loadBMP_custom(textureLocation);
 
     res = loadOBJ(fileLocation, this->vertices, this->uvs, this->normals);

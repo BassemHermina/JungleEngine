@@ -46,8 +46,6 @@ private:
 
     GLuint fragment;
     GLuint vertex;
-
-
     string name;
 };//static PhongShader ("PhongShader", "StandardShading.vertexshader", "StandardShading.fragmentshader");
 

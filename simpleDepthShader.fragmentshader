@@ -3,12 +3,19 @@
 // Ouput data
 varying float vDepth;
 
+
+//# this Shader is used to produce the shadow map in a texture, which is 
+//# excplitily attached to the bounded framebuffer (not default)
+//# and results in creating the depth shadow map
+//# NB: it draws the depthmap on the screen for debugging
+//# NB2: it doesn't draw the texture, it draws directly to the screem
+
+// to draw the texture yoou can use the predefined function with another shader
+// that is defined in main.cpp "renderToTexture"
 void main(){
     // Not really needed, OpenGL does it anyway
-   // gl_FragDepth = 1.0;
-    //gl_FragColor.rgb = vec3(fragdepth);
+   // gl_FragDepth = vDepth;
+
     gl_FragColor = vec4(vDepth);
     
-    //gl_FragColor = vec4(vDepth, 0,0,1);
-
 }

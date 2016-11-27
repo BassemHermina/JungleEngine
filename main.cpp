@@ -14,6 +14,7 @@
 #include <shaderlibrary.h>
 #include "Shaders.hpp"
 #include <shaderlibrary.h>
+#include "SkyBoxes/SkyBox.hpp"
 #include "helpers/Shadows.hpp"
 
 int initializeGL();
@@ -21,6 +22,15 @@ void lightControls_Phong();
 float x = 200;
 using namespace std;
 void renderfromTexture(GLuint TextureIDtobesampled);
+
+glm::mat4 biasMatrix(
+0.5, 0.0, 0.0, 0.0,
+0.0, 0.5, 0.0, 0.0,
+0.0, 0.0, 0.5, 0.0,
+0.5, 0.5, 0.5, 1.0
+);
+
+
 
 int main(void)
 {
@@ -37,9 +47,9 @@ int main(void)
     Shader * TextToScreen;
     TextToScreen = ShaderLibrary::GetTexToScreen();
 
-    GLint nrAttributes;
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-    std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
+    Shader * cubeMapShader;
+    cubeMapShader = ShaderLibrary::GetcubeMapShader();
+    cubeMapShader->LoadShader("cubeMapShader" , "skybox.vs" , "skybox.frag");
 
     //BH: the GameObjects_Bucket is the Datastructure that holds all the game objects with inherit from monobehavior
     hierarchy *GameObjects_Bucket= new hierarchy;
@@ -85,52 +95,41 @@ int main(void)
     // must be created before shadowmapping
     Shadow ShadowObject;
     ShadowObject.initialize();  //calls the constructor only till now
-    // ana gowa 3amalt load lel shader 5las, we foo2 5ales afashto
 
-    glm::mat4 biasMatrix(
-    0.5, 0.0, 0.0, 0.0,
-    0.0, 0.5, 0.0, 0.0,
-    0.0, 0.0, 0.5, 0.0,
-    0.5, 0.5, 0.5, 1.0
-    );
-
+    SkyBox WORLD;
+    WORLD.Init();
 
     do{
+
+        WORLD.drawWithClear();
+
         ///RenderShadowMap to FB////
-        //the framebuffer must be bind before any glFunction!!!!!!!!!!!!!!!
-         glBindFramebuffer(GL_FRAMEBUFFER, ShadowObject.fb);
-        glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );// da mlosh lazma, hwa keda keda 3aref hya5od a mn el rasma  , el background mlhash lazma
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //glEnableVertexAttribArray(simpleDepthMap->Attribute("vertexPosition_modelspace"));
-        glViewport(0,0,1024,1024);
-        simpleDepthMap->Use();
+        ShadowObject.PreRenderShadowMap();
         GameObjects_Bucket->drawDepthMap();
 
         ///RenderScene to screen////
         glBindFramebuffer(GL_FRAMEBUFFER, 0);  //return back to default buffer which is rendered to the screen
         PhongShader->Use();
+        glCullFace(GL_BACK);
         glViewport(0,0,1024,768);
-        glClearColor(0.0f, 0.682352f, 0.933333f, 0.0f); //yaslaam yaro7 5altak :D
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //removed the clear 3ashan ba-clear abl marsem el cubemap, 3ashan mamsa7haash
+        ///law 3'aiart tartib eni arsem el cubemap el awel lazem a7ot dol
+        //glClearColor(0.0f, 0.682352f, 0.933333f, 0.0f); //yaslaam yaro7 5altak :D
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //send texture to framebuffer
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, ShadowObject.texture);
         PhongShader->SendUniform("shadowMap", 1);
         PhongShader->SendUniform("DepthVP", ShadowObject.depthVP); // el view projection da sabet , 3ashan ana msh b3'aiar mkan el light
         PhongShader->SendUniform("BiasMatrix", biasMatrix);
-
         GameObjects_Bucket->drawPhong();
         //renderfromTexture(depthTexture);
 
-        /////////////////////////////////////
-        //lw Un-commented el satr da by3ml error case 7lw, bysa3ed 3l fehm
- //       GameObjects_Bucket->drawDepthMap();
+////    GameObjects_Bucket->drawDepthMap();
 
         lightControls_Phong();
 
-        //endertoTexture(Suzanne2.getTextureSamplerIDtoBind());
-
-
+        //renderfromTexture(Suzanne2.getTextureSamplerIDtoBind());
 
         // Swap buffers
         glfwSwapBuffers();
