@@ -5,18 +5,26 @@
 
 SkyBox::SkyBox() {
 
-    //    faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_rt.bmp");
-    //    faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_lf.bmp");
-    //    faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_dn.bmp"); //supposed to be up
-    //    faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_up.bmp"); //supposed to be down
-    //    faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_bk.bmp");
-    //    faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_ft.bmp");
-        faces.push_back("SkyBoxes/cubemap1/darkgloom_rt.bmp");
-        faces.push_back("SkyBoxes/cubemap1/darkgloom_lf.bmp");
-        faces.push_back("SkyBoxes/cubemap1/darkgloom_dn.bmp"); //supposed to be up
-        faces.push_back("SkyBoxes/cubemap1/darkgloom_up.bmp"); //supposed to be down
-        faces.push_back("SkyBoxes/cubemap1/darkgloom_bk.bmp");
-        faces.push_back("SkyBoxes/cubemap1/darkgloom_ft.bmp");
+//        faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_rt.bmp");
+//        faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_lf.bmp");
+//        faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_dn.bmp"); //supposed to be up
+//        faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_up.bmp"); //supposed to be down
+//        faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_bk.bmp");
+//        faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_ft.bmp");
+
+//        faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_rt.bmp");
+//        faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_lf.bmp");
+//        faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_dn.bmp"); //supposed to be up
+//        faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_up.bmp"); //supposed to be down
+//        faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_bk.bmp");
+//        faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_ft.bmp");
+
+//        faces.push_back("SkyBoxes/cubemap1/darkgloom_rt.bmp");
+//        faces.push_back("SkyBoxes/cubemap1/darkgloom_lf.bmp");
+//        faces.push_back("SkyBoxes/cubemap1/darkgloom_dn.bmp"); //supposed to be up
+//        faces.push_back("SkyBoxes/cubemap1/darkgloom_up.bmp"); //supposed to be down
+//        faces.push_back("SkyBoxes/cubemap1/darkgloom_bk.bmp");
+//        faces.push_back("SkyBoxes/cubemap1/darkgloom_ft.bmp");
 }
 
 
@@ -49,8 +57,80 @@ GLuint SkyBox::loadCubemap(std::vector<std::string> faces)
     return textureID;
 }
 
-void SkyBox::Init()
+void SkyBox::InitReal()
 {
+            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_rt.bmp");
+            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_lf.bmp");
+            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_dn.bmp"); //supposed to be up
+            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_up.bmp"); //supposed to be down
+            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_bk.bmp");
+            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_ft.bmp");
+
+    //outside the do loop !!
+    skyboxTexture = loadCubemap(faces);
+    GLfloat skyboxVertices[] = {
+        // Positions
+        -1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+        -1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f
+    };
+
+    glGenBuffers(1, &cubaMapVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, cubaMapVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_DYNAMIC_DRAW);
+
+
+}
+
+void SkyBox::InitBlurry()
+{
+
+    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_rt.bmp");
+    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_lf.bmp");
+    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_dn.bmp"); //supposed to be up
+    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_up.bmp"); //supposed to be down
+    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_bk.bmp");
+    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_ft.bmp");
+
+
     //outside the do loop !!
     skyboxTexture = loadCubemap(faces);
     GLfloat skyboxVertices[] = {
@@ -106,7 +186,7 @@ void SkyBox::Init()
 }
 
 
-void SkyBox::drawWithClear()
+void SkyBox::clearThenDraw()
 {
     //inside the loop
     Shader * cubeMapShader;

@@ -19,10 +19,17 @@ uniform mat4 V;
 uniform mat4 M;
 uniform vec3 LightPosition_worldspace;
 
+// Shadow mapping
 uniform mat4 DepthVP;
 uniform mat4 BiasMatrix;
-
 varying vec4 ShadowCoord;
+
+// World (Environment) light _ color bleeding
+varying vec3 Normal;
+varying vec3 Position;
+uniform mat4 Minv;
+
+
 
 void main(){
 
@@ -32,6 +39,9 @@ void main(){
 	// Output position of the vertex, in clip space : MVP * position
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
 	
+	// environment light
+	Normal = mat3(transpose(Minv)) * vertexNormal_modelspace;
+    Position = vec3(M * vec4(vertexPosition_modelspace, 1.0f));
 
 	// Same, but with the light's view matrix
 	ShadowCoord = depthBiasMVP * vec4(vertexPosition_modelspace,1);

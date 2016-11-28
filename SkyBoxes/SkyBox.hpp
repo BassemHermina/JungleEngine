@@ -28,8 +28,9 @@ class SkyBox {
         GLuint loadCubemap(std::vector<std::string> faces);
 
 
-        void drawWithClear();
-        void Init();
+        void clearThenDraw();
+        void InitReal();
+        void InitBlurry();
 
 };
 

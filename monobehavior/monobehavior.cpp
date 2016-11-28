@@ -48,6 +48,9 @@ void monobehaviorClass::sendDatatoBuffers_Phong()
     // Send our transformation to the currently bound shader,
     // in the "MVP" uniform
     PhongShader->SendUniform("MVP", this->MVP);
+    // Minv needed for environment lighting calculations
+    glm::mat4 Minv = glm::inverse(this->ModelMatrix);
+    PhongShader->SendUniform("Minv", Minv);
     PhongShader->SendUniform("M", this->ModelMatrix);
     PhongShader->SendUniform("V", this->ViewMatrix);
 

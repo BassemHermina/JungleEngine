@@ -16,8 +16,15 @@ uniform float LightPower;
 uniform float r; //da el ana 3mlto (bassem) 3ashan n3'aiar ambient el red , we el bya5do mn hna , el GLuint rr =glGetUniformLocation(programID, "r"); el fi el cpp
 uniform float g;
 
+// Shadow mapping
 uniform sampler2D shadowMap;
 varying vec4 ShadowCoord;
+
+// World (Environment) light _ color bleeding
+uniform vec3 cameraPos;  //frag
+uniform samplerCube skybox;  //frag
+varying vec3 Normal;
+varying vec3 Position;
 
 float LinearizeDepth (float depth);
 
@@ -134,17 +141,31 @@ void main(){
 	// }
 
 
+	// Enviroment Light _ color bleeding
+	vec3 Ienv = normalize(Position - cameraPos);
+    vec3 Renv = reflect(Ienv, normalize(Normal));
+    vec3 color = textureCube(skybox, - Renv).rgb;
+
+    //vec3 LIGHT = mix(LightColor ,color, 0.5);
+
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
-		MaterialAmbientColor +
+		MaterialAmbientColor +  
 		// Diffuse : "color" of the object
-		visibility *  MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
+		visibility *  MaterialDiffuseColor * LightColor  * color * LightPower * cosTheta / (distance*distance) +
 		// Specular : reflective highlight, like a mirror
-		visibility * MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
+		visibility * MaterialSpecularColor * LightColor  * LightPower * pow(cosAlpha,5) / (distance*distance);
+
+
+
+
+	// Environment light pass
+
+	//gl_FragColor.rgb = mix(gl_FragColor.rgb ,color, 0.3);
+
 
 	// end of Phong shading model
 	///////////////////////////////////////////////////////////////////////
-
 
 	//testing the depth fighting and stuff about depth buffer
 	//rendering the scene in colors of depth (black = near)

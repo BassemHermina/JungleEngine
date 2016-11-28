@@ -16,9 +16,9 @@ bool ShellClass::update()
 ShellClass::ShellClass()
 {
     //.obj file and .bmp texture file
-    fileLocation = "3dmodels/shell.obj";
+    fileLocation = "3dmodels/suzanne.obj";
     //fileLocation = "cube.obj";
-    textureLocation = "3dmodels/shelltexbmp.bmp";
+    textureLocation = "3dmodels/suzanneTexBmp.bmp";
     Texture = loadBMP_custom(textureLocation);
 
     res = loadOBJ(fileLocation, this->vertices, this->uvs, this->normals);

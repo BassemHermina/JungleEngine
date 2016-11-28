@@ -96,12 +96,15 @@ int main(void)
     Shadow ShadowObject;
     ShadowObject.initialize();  //calls the constructor only till now
 
-    SkyBox WORLD;
-    WORLD.Init();
+    SkyBox WORLDreal;
+    WORLDreal.InitReal();
+
+    SkyBox WorldBlurry;
+    WorldBlurry.InitBlurry();
 
     do{
 
-        WORLD.drawWithClear();
+        WORLDreal.clearThenDraw();
 
         ///RenderShadowMap to FB////
         ShadowObject.PreRenderShadowMap();
@@ -120,8 +123,14 @@ int main(void)
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, ShadowObject.texture);
         PhongShader->SendUniform("shadowMap", 1);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, WorldBlurry.skyboxTexture);
+        PhongShader->SendUniform("skybox", 2);
+        //PhongShader->SEND ( Model matrix inverse ) is done inside drawPhong for every object
+        // as i can't find a function to calculate Model matrix in GLSL
         PhongShader->SendUniform("DepthVP", ShadowObject.depthVP); // el view projection da sabet , 3ashan ana msh b3'aiar mkan el light
         PhongShader->SendUniform("BiasMatrix", biasMatrix);
+        PhongShader->SendUniform("cameraPos", getCameraPosition());
         GameObjects_Bucket->drawPhong();
         //renderfromTexture(depthTexture);
 
