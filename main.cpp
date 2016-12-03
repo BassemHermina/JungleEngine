@@ -16,6 +16,7 @@
 #include <shaderlibrary.h>
 #include "SkyBoxes/SkyBox.hpp"
 #include "helpers/Shadows.hpp"
+#include "Maze/Maze.hpp"
 
 int initializeGL();
 void lightControls_Phong();
@@ -52,30 +53,31 @@ int main(void)
     cubeMapShader->LoadShader("cubeMapShader" , "skybox.vs" , "skybox.frag");
 
     //BH: the GameObjects_Bucket is the Datastructure that holds all the game objects with inherit from monobehavior
-    hierarchy *GameObjects_Bucket= new hierarchy;
+    //hierarchy *GameObjects_Bucket= new hierarchy;
 
     //GameObjects
-    SuzanneClass Suzanne;
-    SuzanneClass Suzanne2;
-    SuzanneClass Suzanne3;
+    //SuzanneClass Suzanne;
+    //SuzanneClass Suzanne2;
+    /*SuzanneClass Suzanne3;
     SuzanneClass Suzanne4;
     SuzanneClass Suzanne5;
-    SuzanneClass Suzanne6;
-    ShellClass Shell;
-    PlaneClass Plane;
+    SuzanneClass Suzanne6;*/
+    //ShellClass Shell;
+   // PlaneClass Plane;
 
     //add the game objects to the list
-    GameObjects_Bucket->add(&Suzanne);
-    GameObjects_Bucket->add(&Suzanne2);
-    GameObjects_Bucket->add(&Suzanne3);
+    //GameObjects_Bucket->add(&Suzanne);
+    //GameObjects_Bucket->add(&Suzanne2);
+    /*GameObjects_Bucket->add(&Suzanne3);
     GameObjects_Bucket->add(&Suzanne4);
     GameObjects_Bucket->add(&Suzanne5);
-    GameObjects_Bucket->add(&Suzanne6);
-    GameObjects_Bucket->add(&Shell);
-    GameObjects_Bucket->add(&Plane);
+    GameObjects_Bucket->add(&Suzanne6);*/
+    //GameObjects_Bucket->add(&Shell);
+    //GameObjects_Bucket->add(&Plane);
+
 
     //initialize world
-    GameObjects_Bucket->init();
+    //GameObjects_Bucket->init();
 
     // note: lma b5ali el ambient a2al btb2a eda2a tab3ya shoia aktr , el hwa lma adalemha 5ales el dnia btswad , msh zy di keda , kol
     //ma3ali ambient btb2a flat shading
@@ -102,18 +104,29 @@ int main(void)
     SkyBox WorldBlurry;
     WorldBlurry.InitBlurry();
 
+    Maze m;
+    SuzanneClass harry;
+    harry.Translate(17.9875f,0.48537f,-19.98861f);
+    harry.Rotate(0,180,0);
+
+
+
+
+
     do{
 
         WORLDreal.clearThenDraw();
 
         ///RenderShadowMap to FB////
         ShadowObject.PreRenderShadowMap();
-        GameObjects_Bucket->drawDepthMap();
+        //GameObjects_Bucket->drawDepthMap();
+        m.drawDepthMap();
+        harry.drawDepthMap();
 
         ///RenderScene to screen////
         glBindFramebuffer(GL_FRAMEBUFFER, 0);  //return back to default buffer which is rendered to the screen
         PhongShader->Use();
-        glCullFace(GL_BACK);
+        glCullFace(GL_BACK); //de momken t3ml moshkla
         glViewport(0,0,1024,768);
         //removed the clear 3ashan ba-clear abl marsem el cubemap, 3ashan mamsa7haash
         ///law 3'aiart tartib eni arsem el cubemap el awel lazem a7ot dol
@@ -131,7 +144,9 @@ int main(void)
         PhongShader->SendUniform("DepthVP", ShadowObject.depthVP); // el view projection da sabet , 3ashan ana msh b3'aiar mkan el light
         PhongShader->SendUniform("BiasMatrix", biasMatrix);
         PhongShader->SendUniform("cameraPos", getCameraPosition());
-        GameObjects_Bucket->drawPhong();
+       // GameObjects_Bucket->drawPhong();
+        m.drawPhong();
+        harry.drawPhong();
         //renderfromTexture(depthTexture);
 
 ////    GameObjects_Bucket->drawDepthMap();

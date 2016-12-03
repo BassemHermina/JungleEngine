@@ -77,6 +77,10 @@ add_executable( main
     helpers/Shadows.hpp
     SkyBoxes/SkyBox.cpp
     SkyBoxes/SkyBox.hpp
+    Maze/Maze.cpp
+    Maze/Maze.hpp
+    Maze/Parts.cpp
+    Maze/Parts.hpp
 
 
 )
