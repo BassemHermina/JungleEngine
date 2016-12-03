@@ -16,15 +16,14 @@ bool SuzanneClass::update()
 SuzanneClass::SuzanneClass()
 {
     //.obj file and .bmp texture file
-    fileLocation = "3dmodels/banana.obj";
-    //fileLocation = "cube.obj";
-    textureLocation = "3dmodels/banana_texture.bmp";
-    Texture = loadBMP_custom(textureLocation);
-
+    fileLocation = "Harry Potter/Harry_without_wand.obj";
+        //fileLocation = "cube.obj";
+    textureLocation = "Harry Potter/Harry_all.bmp";
     res = loadOBJ(fileLocation, this->vertices, this->uvs, this->normals);
     //generateAndBindBuffers(); mynfa3sh di tt3ml hna , 3ashan ana wana barsem
     // kol mara haloop 3la kol el objects , a3ml bind warsmhom wad5ol 3l ba3do w keda
     // mynf3sh a bind mn l awel
+    Texture = loadBMP_custom(textureLocation);
 
     //these belongs to contol.cpp bas ana ha3ml wa7da zyha we hyb2a fiha el projection wel view matrices bto3 el world
     // Projection and view are global , laken model fi mnha fi kol wa7ed
