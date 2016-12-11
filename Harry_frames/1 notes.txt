@@ -1,0 +1,46 @@
+float counter incremented by delta time * speed , then cast it to int to get frame index
+
+y3ni ha7tag el delta time mn el frame el fat , mn awel madoos le odam keda
+awel madoss le odam haygib awel frame , b3d keda we hwa byrsm el ba3do , haygib far2 el wa2t el 7sal , we ndrabo fi el speed we n2sem 3la 60 3shan nshof 3aizin anhi frame b2a , we n5lih integer we ngib el frame
+
+bs keda lazm agib el delta mn sa3et ma bda2t el animation , ya3ni awel mados el zorar ygib el time dlwa2ty w y5ali m3ah , we b3d keda fi kol frame ygib el time el gdid we ygib el delta we abl ma el frame y5las y5azen el gdid da 3la eno el fat bta3 el frame el gay 
+
+frame new = frame old + counter%69
+or frame new = (frame old + 1) % 69 (my number of frames)
+
+frame new = int{ deltatime(ms)*1000  (sec) /60 (fps) [da 3adad el fatoni]
+		+ frame old } % 69
+
+============================================
+a test ezaaay
+-a3ml code byb3at lel shader el position no2ta wel shader haylawen kolo abiad m3ada hya lon
+-kol loop fl game loop, position el no2ta di hy-increment in a direction
+-fl shader , 7ot loop kbira , 5aliha t2asar 3la sor3et 7raket el point
+-b3d keda e3ml equation t7sb mkan el pixel 7sab el time eli el shader 5ado fl render 3ashan a5ali el sor3a sabta , westa5dem el code da b2a fl game bta3tna
+
+msh 3aref a-test asln xD yalahwy lel dragadi :'D
+
+shoof el sphere msh sha3;ala leeh? - 3shan mfish UV!
+
+// garab zabat l translation bta3 harry zy l camera controls 
+//dlwa2ty bgrab fl delta time 3ashan afhamha - done
+
+ we e3ml load lel objects bta3et Harry : done
+
+ we grab keda be kaza Vertex buffer el awel : done
+
+we e5tar ai wa7ed fihom b rkam we3rdo 3l shasha sabet : done
+
+b3d keda e3ml loop 3l rakam da : done
+
+b3d keda e3ml el delta time : done
+
+da5al function animate gowa we 5ali da mmkn n-inherit mnha 
+
+b3d keda e3mlhom fi buffer wa7ed 
+
+-------------------------------
+
+el mafrdo b2a ams7 el buffers washof ai 7aga 3aiza ttmse7 tani 3ashan 
+mayhanegsh ba3d fatra
+

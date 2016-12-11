@@ -22,7 +22,7 @@ void Shadow::initialize(){
 
     ///ma3rafsh kan fi a fl code 3'alat kol da!!!!!!!!!!!!!
     /// 5adto copy paste esht3'al :/ m3rfshl leeh wla ezay
-    fb = 0;
+    fb = 7;
     glGenFramebuffers(1, &fb);
     glBindFramebuffer(GL_FRAMEBUFFER, fb);
 
@@ -111,8 +111,8 @@ void Shadow::PreRenderShadowMap(){
 
     ///RenderShadowMap to FB////
     //the framebuffer must be bind before any glFunction!!!!!!!!!!!!!!!
-    glBindFramebuffer(GL_FRAMEBUFFER, fb);
-    glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );// da mlosh lazma, hwa keda keda 3aref hya5od a mn el rasma  , el background mlhash lazma
+    glBindFramebuffer(GL_FRAMEBUFFER, this->fb);
+    glClearColor( 0.0f, 1.0f, 1.0f, 1.0f );// da mlosh lazma, hwa keda keda 3aref hya5od a mn el rasma  , el background mlhash lazma
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glEnableVertexAttribArray(simpleDepthMap->Attribute("vertexPosition_modelspace"));
     glViewport(0,0,2048,2048);  // must be same numbers in shadowmap object Texture Image 2D !!!

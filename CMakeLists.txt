@@ -81,6 +81,8 @@ add_executable( main
     Maze/Maze.hpp
     Maze/Parts.cpp
     Maze/Parts.hpp
+    Objects/Harry_frames.cpp
+    Objects/Harry_frames.hpp
 
 
 )

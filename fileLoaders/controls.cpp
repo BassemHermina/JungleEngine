@@ -6,6 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
+#include <iostream>
+using namespace std;
 #include "controls.hpp"
 
 glm::mat4 ViewMatrix;
@@ -22,11 +24,11 @@ glm::mat4 getProjectionMatrix(){
 
 
 // Initial position : on +Z
-glm::vec3 position = glm::vec3( -1, 4, 12 );
+glm::vec3 position = glm::vec3(18.3236, 2.05326 ,-16.4623 );
 // Initial horizontal angle : toward -Z
-float horizontalAngle = 3.14f;
+float horizontalAngle = 0.053;
 // Initial vertical angle : none
-float verticalAngle = 0.0f;
+float verticalAngle =  -0.399;
 // Initial Field of View
 float initialFoV = 45.0f;
 
@@ -43,6 +45,8 @@ int ypos=768/2;
 
 int counterX = 0;
 int counterY = 0;
+
+float walkspeed = 1.0f;
 
 void computeMatricesFromInputs(){
 
@@ -105,8 +109,8 @@ void computeMatricesFromInputs(){
     //glfwSetMousePos(1024/2, 768/2);
 
 	// Compute new orientation
-    horizontalAngle = 3.14f + mouseSpeed * float(1024/2 - xvirtual );   // use xvirtual/yvirtual instead of xpos to allow mouse to rotate freely
-    verticalAngle   = mouseSpeed * float( 768/2 - yvirtual );
+    horizontalAngle =  0.053 + mouseSpeed * float(1024/2 - xvirtual );   // use xvirtual/yvirtual instead of xpos to allow mouse to rotate freely
+    verticalAngle   =  -0.399 + mouseSpeed * float( 768/2 - yvirtual );
 
 
 
@@ -127,27 +131,55 @@ void computeMatricesFromInputs(){
 	// Up vector
     glm::vec3 up = glm::cross( right, direction );
 
+    if (glfwGetKey( GLFW_KEY_SPACE ) == GLFW_PRESS){
+        walkspeed = 5.0;
+    }
+
+    if (glfwGetKey( GLFW_KEY_SPACE ) == GLFW_RELEASE){
+        walkspeed = 1.0;
+    }
+
 	// Move forward
-    if (glfwGetKey( GLFW_KEY_UP ) || glfwGetKey( GLFW_KEY_w ) == GLFW_PRESS){
-		position += direction * deltaTime * speed;
-	}
-	// Move backward
-    if (glfwGetKey( GLFW_KEY_DOWN ) || glfwGetKey( GLFW_KEY_s ) == GLFW_PRESS){
-		position -= direction * deltaTime * speed;
-	}
+    if (glfwGetKey( GLFW_KEY_w ) == GLFW_PRESS){
+        position =  position +  vec3(0.0,0.0,1.0) * deltaTime * walkspeed;
+    }
+    // Move backward
+    if ( glfwGetKey( GLFW_KEY_s ) == GLFW_PRESS){
+        position =  position +  vec3(0.0,0.0,-1.0) * deltaTime * walkspeed;
+    }
 	// Strafe right
-    if (glfwGetKey( GLFW_KEY_RIGHT ) || glfwGetKey( GLFW_KEY_d ) == GLFW_PRESS){
-		position += right * deltaTime * speed;
-	}
+//    if (glfwGetKey( GLFW_KEY_d ) == GLFW_PRESS){
+//        position =  position +  vec3(-1.0,0.0,0.0) * deltaTime * walkspeed;
+//    }
 	// Strafe left
-    if (glfwGetKey( GLFW_KEY_LEFT ) || glfwGetKey( GLFW_KEY_a ) == GLFW_PRESS){
-		position -= right * deltaTime * speed;
-	}
+    if (glfwGetKey( GLFW_KEY_a ) == GLFW_PRESS){
+        position =  position +  vec3(1.0,0.0,0.0) * deltaTime * walkspeed;
+    }
     if (glfwGetKey( GLFW_KEY_RSHIFT ) == GLFW_PRESS){
-        position +=  (0,0,1);
+        position =  position +  vec3(0.0,0.001,0.0);
+    }
+    if (glfwGetKey( GLFW_KEY_RCTRL ) == GLFW_PRESS){
+        position =  position -  vec3(0.0,0.001,0.0);
     }
 
 	float FoV = initialFoV - 5 * glfwGetMouseWheel();
+
+
+    if (glfwGetKey( GLFW_KEY_UP )  == GLFW_PRESS){
+        position += direction * deltaTime * speed;
+    }
+    // Move backward
+    if (glfwGetKey( GLFW_KEY_DOWN ) == GLFW_PRESS){
+        position -= direction * deltaTime * speed;
+    }
+    // Strafe right
+    if (glfwGetKey( GLFW_KEY_RIGHT ) == GLFW_PRESS){
+        position += right * deltaTime * speed;
+    }
+    // Strafe left
+    if (glfwGetKey( GLFW_KEY_LEFT )== GLFW_PRESS){
+        position -= right * deltaTime * speed;
+    }
 
 //    //B: to allow to to freely rotate in the game
 //    if (xpos == 1023)
@@ -163,7 +195,11 @@ void computeMatricesFromInputs(){
 								up                  // Head is up (set to 0,-1,0 to look upside-down)
 						   );
 
-	// For the next frame, the "last time" will be "now"
-	lastTime = currentTime;
+    //std::cout << position.x << " " << position.y << " " << position.z << endl;
+    //std::cout << horizontalAngle << " " << verticalAngle << endl;
+
+    // For the next frame, the "last time" will be "now"
+    lastTime = currentTime;
+
 }
 

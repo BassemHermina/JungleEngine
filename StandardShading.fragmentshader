@@ -54,15 +54,15 @@ void main(){
 
 	// Light emission properties
 	// You probably want to put them as uniforms
-	vec3 LightColor = vec3(0.9,0.9,1.0); //light blue
-
+	//vec3 LightColor = vec3(0.9,0.9,1.0); //light blue
+	vec3 LightColor = vec3(1,1,1); //white
 	
 	// Material properties
 	vec3 MaterialDiffuseColor = texture2D( myTextureSampler, UV ).rgb;
 	vec3 MaterialAmbientColor = vec3(0.3,0.3,0.3) * MaterialDiffuseColor;
 	//vec3 MaterialAmbientColor =  MaterialDiffuseColor; // k2ni drabt fi vec3(1,1,1)
 	//el effect el ana 3aizo el flat da , el ambient fih = 1 bayen
-	vec3 MaterialSpecularColor = vec3(0.1,0.1,0.1);
+	vec3 MaterialSpecularColor = vec3(0);
 
 	//// Distance to the light
 	////float distance = length( LightPosition_worldspace - Position_worldspace );
@@ -148,14 +148,35 @@ void main(){
 
     //vec3 LIGHT = mix(LightColor ,color, 0.5);
 
+
+
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
 		MaterialAmbientColor +  
 		// Diffuse : "color" of the object
-		visibility *  MaterialDiffuseColor * LightColor  * color * LightPower * cosTheta / (distance*distance) +
+		visibility *  MaterialDiffuseColor * LightColor * LightPower/5 * cosTheta / (distance*distance)  * color / color;
+		
+//hena bylma3 lw Color , lw LightColor msh bylma3
+		// here you should divide on 5
 		// Specular : reflective highlight, like a mirror
-		visibility * MaterialSpecularColor * LightColor  * LightPower * pow(cosAlpha,5) / (distance*distance);
+		// visibility * MaterialSpecularColor * LightColor  * LightPower * pow(cosAlpha,5) / (distance*distance);
 
+////////////////////////////////////////////////
+	//PostProcessing
+	float depth = LinearizeDepth(gl_FragCoord.z);
+	//gl_FragColor.rgb = gl_FragColor.rgb * (0.5-depth);
+	//gl_FragColor.rgb = 1-  vec3(depth/0.3);
+
+	//foggy effect
+	//gl_FragColor.rgb = mix(gl_FragColor.rgb,1-  vec3(depth/0.3),0.62);
+	//gl_FragColor.rgb = mix(gl_FragColor.rgb,vec3(depth),0.7);
+	//gl_FragColor.rgb = mix(gl_FragColor.rgb, 1 - vec3(depth/0.3),0.62);
+	gl_FragColor.rgb = gl_FragColor.rgb * vec3(1-vec3(depth/0.6));  //7lw da, el3ab fl ratio
+	//gl_FragColor.rgb = mix(gl_FragColor.rgb,vec3(depth),0.7);
+	float fogAmount = 1.0 - exp( -depth );
+    vec3  fogColor  = vec3(0.5,0.6,0.7);
+    gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogAmount );
+	///////////////////////////////////////////////
 
 
 
@@ -181,7 +202,8 @@ void main(){
 float LinearizeDepth(float depth)
 {
 	float near = 0.1;
-	float far = 100.0;
+	float far = 20.0;
 	float z = depth * 2.0 - 1.0; // Back to NDC
 	return (2.0 * near) / (far + near - z * (far - near));
 }
+

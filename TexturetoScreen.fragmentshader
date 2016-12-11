@@ -3,10 +3,312 @@
 // In data
 varying vec2 var_vertexUV; //texture to screen
 uniform sampler2D myTextureSampler;
+uniform sampler2D DepthTex;
+vec2 resolution;
+float LinearizeDepth (float depth);
+
+//noise Functions
+float hash(vec2 p);
+float noise( vec2 p);
+float fbm(vec2 p);
+
+
+//Cubic lens (vignette & chromatic abbr.)
+float k = -0.55;
+float dispersion = 0.02;
+float scale = 0.9;  //hahaha :D 7otto be 2  //was 0.9
+float etaR = 0.9, etaG = 0.6, etaB = 0.2;
+float kcube = 0.3;  //was 0.5
+
+//LensFlare - not working
+int ghosts = 3;
+float dispertion = 0.3;
+vec3 pattern(vec2 uv);
+float luminance(vec3 color);
+
+///Pixelation
+float rt_w = 1024; // GeeXLab built-in
+float rt_h = 768; // GeeXLab built-in
+float pixel_w = 10; // 15.0
+float pixel_h = 10; // 10.0
+
+uniform float random;
+
+//Guassian Blur
+// float offset[8] = float[]( 0.0, 
+//                            0.3846153846, 
+//                            0.2307692308,
+//                            0.46515,
+//                            0.6543215,
+//                            0.165168132,
+//                            0.913218,
+//                            0.30321315 );
+// float weight[8] = float[]( 1.0, 
+//                            1.3846153846, 
+//                            5.2307692308,
+//                            2.46515,
+//                            2.6543215,
+//                            6.165168132,
+//                            7.913218,
+//                            1.30321315 );
+
+float offset[5] = float[]( 0.0, 1.3846153846, 3.2307692308, 6.31513135 , 8.5153151);
+float weight[5] = float[]( 0.3270270270, 0.4162162162, 0.5702702703, 0.631351351, 0.3235431 );
+float LinearizeDepthForBlur(float depth);
+
 
 void main(){
     
+		resolution = vec2(1024,768);
+		vec2 uv = var_vertexUV.xy;
+   		float LinearDepth = LinearizeDepth(texture2D(DepthTex,uv).z);
+    	float Depth = texture2D(DepthTex,uv).z;
+
+
+
+		//normal    
     	gl_FragColor.rgb = texture2D( myTextureSampler, var_vertexUV ).rgb;
 
+    	gl_FragColor.r += Depth;
+    	gl_FragColor.r-= Depth;
+    	//inverted
+    	//gl_FragColor.rgb = vec3( 1.0 - texture2D( myTextureSampler, var_vertexUV ).rgb);
 
+      
+    	
+////////////////////////////////////////////////
+///// Radial effect (getting hit or something)
+    // vec2 p = -1.0 + 2.0 * uv;
+    // vec4 color = texture2D(myTextureSampler, uv);
+    // float r = dot(p, p);
+    // float a = atan(p.y, p.x);
+    // float f = fbm(vec2(r, 50.0 * a));
+    // float w = length(vec2(0.5) - uv);
+    // f *= w;
+    // gl_FragColor = mix(color, color * f, 0.4);
+////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////
+    //Blur
+    //increase texel size to increase blurriness
+    // make texel size depend on depth
+    //vec2 uv = var_vertexUV.xy;
+
+    // float LinearDepth = LinearizeDepth(texture2D(DepthTex,uv).z);
+    // float Depth = texture2D(DepthTex,uv).z;
+    // vec2 texelSize = 10 / resolution;
+    // vec4 colors = vec4(0.0);
+
+    
+    // colors +=  3.0 * texture2D(myTextureSampler, uv);
+    // colors +=  2.0 * texture2D(myTextureSampler, uv + vec2( texelSize.x,          0.0));
+    // colors +=  2.0 * texture2D(myTextureSampler, uv + vec2(-texelSize.x,          0.0));
+    // colors +=  2.0 * texture2D(myTextureSampler, uv + vec2(         0.0,  texelSize.y));
+    // colors +=  2.0 * texture2D(myTextureSampler, uv + vec2(         0.0, -texelSize.y));
+    // colors += 1.25 * texture2D(myTextureSampler, uv + vec2( texelSize.x,  texelSize.y));
+    // colors += 1.25 * texture2D(myTextureSampler, uv + vec2(-texelSize.x,  texelSize.y));
+    // colors += 1.25 * texture2D(myTextureSampler, uv + vec2(-texelSize.x, -texelSize.y));
+    // colors += 1.25 * texture2D(myTextureSampler, uv + vec2( texelSize.x, -texelSize.y));
+    // colors /= 16.0;
+
+    // gl_FragColor = colors;
+
+    ////gl_FragColor.rgb = vec3(depth);
+/////////////////////////////////////////////////
+
+////////////////////////////////////////////////
+    // Vignette and Chromatic abbr. [Cubic Lens]
+    vec3 eta = vec3(1.0 + dispersion * etaR, 1.0 + dispersion * etaG, 1.0 + dispersion * etaB);
+    vec3 color = vec3(0.0); 
+
+    float r2 = (uv.x - 0.5) * (uv.x - 0.5) + (uv.y - 0.5) * (uv.y - 0.5);   
+    float f = 1 + r2 * (k + kcube * sqrt(r2));
+
+    vec2 ruv = (f * eta.r) * scale * (uv.xy - 0.5) + 0.5;
+    vec2 guv = (f * eta.g) * scale * (uv.xy - 0.5) + 0.5;
+    vec2 buv = (f * eta.b) * scale * (uv.xy - 0.5) + 0.5;
+
+    color.r = texture2D(myTextureSampler, ruv).r;
+    color.g = texture2D(myTextureSampler, guv).g;
+    color.b = texture2D(myTextureSampler, buv).b;
+
+    float d = length(uv - vec2(0.5));
+    color *= clamp(1.0 - d*d, 0.0, 1.0);
+
+    gl_FragColor = vec4(color, 1.0);
+
+    gl_FragColor.r += Depth;
+    gl_FragColor.r-= Depth;
+/////////////////////////////////////////////////
+
+
+// LensFlare - not working
+// /////////////////////////////////////////////////
+   
+//     vec2 uv = (-var_vertexUV.xy / resolution) + vec2(1.0); 
+//     vec2 ghostDir = (vec2(0.5) - uv) * dispertion;
+
+//     vec4 result = vec4(0.0);
+//     for (int i = 0; i < ghosts; ++i) { 
+//         vec2 offset = fract(uv + ghostDir * float(i));
+//         float weight = length(vec2(0.5) - offset) / length(vec2(0.5));
+//         weight = pow(1.0 - weight, 10.0);
+//         result += texture2D(myTextureSampler, offset) * weight;
+//     }
+//     float patternWeight = 0.4 * length(vec2(0.5) - uv);
+//     result = mix(result, result * vec4(pattern(uv), 1.0), 0.6);
+
+//     vec2 haloVec = normalize(ghostDir) * 0.4;
+//     float weight = length(vec2(0.5) - fract(uv + haloVec)) / length(vec2(0.5));
+//     weight = pow(1.0 - weight, 5.0);
+//     vec4 halo = texture2D(myTextureSampler, uv + haloVec) * weight;
+
+//     gl_FragColor = 0.06 * result + 0.03 * halo;
+// ////////////////////////////////////////////////
+
+
+ // Pixels  - Hahahah :V
+ ///////////////////////////////////////////////
+// for (int i = 0; i < 180 ; i++)
+//  pixel_w++; 
+
+//  pixel_w-= 180;
+
+//
+
+ //  	vec3 tc = vec3(1.0, 0.0, 0.0);
+  
+  
+ //    float dx = pixel_w*(1./rt_w);
+ //    float dy = pixel_h*(1./rt_h);
+ //    vec2 coord = vec2(dx*floor(uv.x/dx),
+ //                      dy*floor(uv.y/dy));
+ //    tc = texture2D(myTextureSampler, coord).rgb;
+ 
+  
+	// gl_FragColor = vec4(tc, 1.0);
+/////////////////////////////////////////////////
+
+
+//Guassian Blur
+///////////////////////////////////////////////
+// // da by5ali el b3id mahzoz sa7 , laken kol ma bythaz byb2a fate7 aktr
+// // 3ashan nsbet el lon el zyada fih aktr, we 3ashan el nesba di msh wad7a
+// // fa ana msh 3aref a7aded a2sem 3ala a , lazem a7aded rakam mo3tamed 3l depth
+// float DOF = LinearizeDepthForBlur(Depth);
+// float DOF2 = 1.0 - exp( -LinearDepth ); // this is better
+// vec3 tc = texture2D(myTextureSampler, uv).rgb * weight[0];
+//     for (int i=1; i<5; i++) 
+//     {
+//       tc += texture2D(myTextureSampler, uv + vec2(offset[i])/rt_w, 0.0).rgb \
+//               * weight[i] * DOF2;
+//       tc += texture2D(myTextureSampler, uv - vec2(offset[i])/rt_w, 0.0).rgb \
+//               * weight[i]* DOF2;
+//     }
+//   for (int i=1; i<5; i++) 
+//     {
+//       tc += texture2D(myTextureSampler, uv + vec2(0.0, offset[i])/rt_h).rgb \
+//               * weight[i] * DOF2;
+//       tc += texture2D(myTextureSampler, uv - vec2(0.0, offset[i])/rt_h).rgb \
+//              * weight[i] * DOF2;
+//     }
+
+// //  tc *= 2;
+//  // tc =  tc *(0.6 - DOF2);  //bynawar brdo kol ma ab3d :(
+// //tc/= 2;
+// //if (DOF > 0.5)
+//   //gl_FragColor = vec4(mix(gl_FragColor.rgb,tc,DOF), 1.0);
+//   gl_FragColor = vec4(tc,1.0);
+// //////////////////////////////////////////////////
+
+//Grain
+////////////////////////////////////////////////
+float grainIntensity =6;
+float x = (uv.x + 4) * (uv.y + 4) * (sin(random) * 10);
+vec4 grain =
+    grainIntensity * vec4(mod((mod(x, 13) + 1) * (mod(x, 123) + 1), 0.01) - 0.005);
+
+gl_FragColor += grain;
+////////////////////////////////////////////////////
+
+//invert
+// gl_FragColor.r =  1.0 - gl_FragColor.r;
+// gl_FragColor.g = 1.0 - gl_FragColor.g;
+// gl_FragColor.b = 1.0 - gl_FragColor.b;
+
+
+
+
+
+
+
+}
+
+
+//uniform sampler2D renderTexture;
+//uniform vec2 resolution;
+
+float hash(vec2 p) {
+   float h = dot(p,vec2(127.1,311.7));
+   return -1.0 + 2.0*fract(sin(h)*43758.5453123);
+}
+
+float noise( vec2 p) {
+   vec2 i = floor(p);
+   vec2 f = fract(p);
+   vec2 u = f*f*(3.0-2.0*f);
+
+   return mix(mix(hash(i + vec2(0.0,0.0)), 
+                  hash(i + vec2(1.0,0.0)), u.x),
+              mix(hash(i + vec2(0.0,1.0)), 
+                  hash(i + vec2(1.0,1.0)), u.x), u.y);
+}
+
+
+float fbm(vec2 p) {
+   float f = 0.0;
+   f += 0.5000 * noise(p); p *= 2.02;
+   f += 0.2500 * noise(p); p *= 2.03;
+   f += 0.1250 * noise(p); p *= 2.01;
+   f += 0.0625 * noise(p); p *= 2.04;
+   f /= 0.9375;
+   return f;
+}
+
+    
+    float LinearizeDepth(float depth)
+{
+	float near = 0.3;
+	float far = 350;
+	float z = depth * 2.0 - 1.0; // Back to NDC
+	return (2.0 * near) / (far + near - z * (far - near));
+}
+
+
+
+// LensFlare ->
+
+vec3 pattern(vec2 uv) {
+   vec2 p = -1.0 + 2.0 * uv;
+   float p2 = dot(p,p);
+   float f = fbm(vec2(15.0*p2)) / 2.0;
+   float r = 0.2 + 0.6 * sin(12.5*length(uv - vec2(0.5)));
+   float g = 0.2 + 0.6 * sin(20.5*length(uv - vec2(0.5)));
+   float b = 0.2 + 0.6 * sin(17.2*length(uv - vec2(0.5)));
+   return (1.0-f) * vec3(r,g,b);
+}
+
+float luminance(vec3 color) {
+    return dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
+}
+
+
+
+    float LinearizeDepthForBlur(float depth)
+{
+  float near = 0.1;
+  float far = 10;
+  float z = depth * 2.0 - 1.0; // Back to NDC
+  return (2.0 * near) / (far + near - z * (far - near));
 }

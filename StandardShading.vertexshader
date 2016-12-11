@@ -38,7 +38,12 @@ void main(){
 
 	// Output position of the vertex, in clip space : MVP * position
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
+
 	
+	//edits to render to PP_framebuffer
+	//gl_Position = vec4(gl_Position.x, gl_Position.y, 0, 1);
+	//gl_Position.x = - gl_Position.x; hahah :D
+
 	// environment light
 	Normal = mat3(transpose(Minv)) * vertexNormal_modelspace;
     Position = vec3(M * vec4(vertexPosition_modelspace, 1.0f));

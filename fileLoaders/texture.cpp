@@ -12,8 +12,8 @@ using namespace std;
 
 GLuint loadBMP_custom(const char * imagepath){
 
-    cout << "Reading image ";
-    cout << imagepath << endl;
+    //cout << "Reading image ";
+    //cout << imagepath << endl;
 
 	// Data read from the header of the BMP file
 	unsigned char header[54];
@@ -80,11 +80,11 @@ GLuint loadBMP_custom(const char * imagepath){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
 
 	//// ... nice trilinear filtering.
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
-	//glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
 	// Return the ID of the texture we just created
 	return textureID;
@@ -93,8 +93,8 @@ GLuint loadBMP_custom(const char * imagepath){
 
 unsigned char* loadBMPdata_cubeMap(const char * imagepath, int & width , int & height ){
 
-    cout << "Reading image ";
-    cout << imagepath << endl;
+    //cout << "Reading image ";
+    //cout << imagepath << endl;
 
     // Data read from the header of the BMP file
     unsigned char header[54];

@@ -25,6 +25,13 @@ SkyBox::SkyBox() {
 //        faces.push_back("SkyBoxes/cubemap1/darkgloom_up.bmp"); //supposed to be down
 //        faces.push_back("SkyBoxes/cubemap1/darkgloom_bk.bmp");
 //        faces.push_back("SkyBoxes/cubemap1/darkgloom_ft.bmp");
+
+    //        faces.push_back("SkyBoxes/cubemap1/negz.bmp");
+    //        faces.push_back("SkyBoxes/cubemap1/posz.bmp");
+    //        faces.push_back("SkyBoxes/cubemap1/negy.bmp"); //supposed to be up
+    //        faces.push_back("SkyBoxes/cubemap1/posy.bmp"); //supposed to be down
+    //        faces.push_back("SkyBoxes/cubemap1/negx.bmp");
+    //        faces.push_back("SkyBoxes/cubemap1/posx.bmp");
 }
 
 
@@ -59,12 +66,12 @@ GLuint SkyBox::loadCubemap(std::vector<std::string> faces)
 
 void SkyBox::InitReal()
 {
-            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_rt.bmp");
-            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_lf.bmp");
-            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_dn.bmp"); //supposed to be up
-            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_up.bmp"); //supposed to be down
-            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_bk.bmp");
-            faces.push_back("SkyBoxes/cubemap1/plains-of-abraham_ft.bmp");
+            faces.push_back("SkyBoxes/cubemap1/negz.bmp");
+            faces.push_back("SkyBoxes/cubemap1/posz.bmp");
+            faces.push_back("SkyBoxes/cubemap1/negy.bmp"); //supposed to be up
+            faces.push_back("SkyBoxes/cubemap1/posy.bmp"); //supposed to be down
+            faces.push_back("SkyBoxes/cubemap1/negx.bmp");
+            faces.push_back("SkyBoxes/cubemap1/posx.bmp");
 
     //outside the do loop !!
     skyboxTexture = loadCubemap(faces);
@@ -123,12 +130,13 @@ void SkyBox::InitReal()
 void SkyBox::InitBlurry()
 {
 
-    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_rt.bmp");
-    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_lf.bmp");
-    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_dn.bmp"); //supposed to be up
-    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_up.bmp"); //supposed to be down
-    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_bk.bmp");
-    faces.push_back("SkyBoxes/cubemap1/Blur/plains-of-abraham_ft.bmp");
+
+    faces.push_back("SkyBoxes/cubemap1/Blur/negz.bmp");
+    faces.push_back("SkyBoxes/cubemap1/Blur/posz.bmp");
+    faces.push_back("SkyBoxes/cubemap1/Blur/negy.bmp"); //supposed to be up
+    faces.push_back("SkyBoxes/cubemap1/Blur/posy.bmp"); //supposed to be down
+    faces.push_back("SkyBoxes/cubemap1/Blur/negx.bmp");
+    faces.push_back("SkyBoxes/cubemap1/Blur/posx.bmp");
 
 
     //outside the do loop !!
@@ -186,13 +194,13 @@ void SkyBox::InitBlurry()
 }
 
 
-void SkyBox::clearThenDraw()
+void SkyBox::clearThenDraw(GLuint FB_ID)
 {
     //inside the loop
     Shader * cubeMapShader;
     cubeMapShader = ShaderLibrary::GetcubeMapShader();
     ////SkyBox////
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);  //return back to default buffer which is rendered to the screen
+    glBindFramebuffer(GL_FRAMEBUFFER, FB_ID);  //return back to default buffer which is rendered to the screen
     cubeMapShader->Use();
     glCullFace(GL_BACK);
     //glDepthMask(GL_FALSE);

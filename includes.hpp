@@ -31,6 +31,7 @@ using namespace glm;
 #include "Objects/Suzanne.hpp"
 #include "Objects/Shell.hpp"
 #include "Objects/plane.hpp"
+#include "Objects/Harry_frames.hpp"
 
 #endif
 
