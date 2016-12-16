@@ -9,6 +9,8 @@
 #include "Shaders.hpp"
 #include <shaderlibrary.h>
 #include "helpers/Shadows.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 monobehaviorClass::monobehaviorClass()
 {}
 
@@ -203,16 +205,20 @@ void monobehaviorClass::Translate(float x, float y, float z)
 {
     glm::mat4 TranslationMatrixTemp = glm::translate(glm::mat4(), glm::vec3(x,y,z));
     this->TranslationMatrix = TranslationMatrixTemp;
+    //cout << TranslationMatrix[0][0] << " " << TranslationMatrix[1][1] << " " << TranslationMatrix[2][2] << " ";
 }
 
 void monobehaviorClass::Rotate(float x, float y, float z)
+
+//ENTA 7MAR YAD!!!
+// kot ba3ml rotation matrix = rotate Idendity in x, then
+//rotation matrix = rotate Identity in y , fa 5alas el 3mlto fl X byebye raa7 :V
+//!! Y7MAAR!
 {
     //Model = glm::rotate(Model, angle_in_degrees, glm::vec3(x, y, z)); // where x, y, z is axis of rotation (e.g. 0 1 0)
     this->RotationMatrix = glm::rotate(glm::mat4(), x, glm::vec3(1,0,0)); // rotate arround x with x degree
-    this->RotationMatrix = glm::rotate(glm::mat4(), y, glm::vec3(0,1,0)); // rotate arround x
-    this->RotationMatrix = glm::rotate(glm::mat4(), z, glm::vec3(0,0,1)); // rotate arround x
-
-
+    this->RotationMatrix = glm::rotate(this->RotationMatrix, y, glm::vec3(0,1,0)); // rotate arround y
+    this->RotationMatrix = glm::rotate(this->RotationMatrix, z, glm::vec3(0,0,1)); // rotate arround z
 }
 
 void monobehaviorClass::Scale(float x, float y, float z)

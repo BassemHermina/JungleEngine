@@ -17,7 +17,7 @@ bool Harryframes::update()
 
 Harryframes::Harryframes()
 {
-    fileLocation = "Harry_frames/Harrypotter_obj_0000";
+    fileLocation = "Harry_frames2/Harrypotter_obj_0000";
     textureLocation = "Harry Potter/Harry_all.bmp";
     //res = loadOBJ(fileLocation, this->vertices, this->uvs, this->normals);
     Texture = loadBMP_custom(textureLocation.c_str());
@@ -162,8 +162,8 @@ void Harryframes::Rotate(float x, float y, float z)
 {
     //Model = glm::rotate(Model, angle_in_degrees, glm::vec3(x, y, z)); // where x, y, z is axis of rotation (e.g. 0 1 0)
     this->RotationMatrix = glm::rotate(glm::mat4(), x, glm::vec3(1,0,0)); // rotate arround x with x degree
-    this->RotationMatrix = glm::rotate(glm::mat4(), y, glm::vec3(0,1,0)); // rotate arround x
-    this->RotationMatrix = glm::rotate(glm::mat4(), z, glm::vec3(0,0,1)); // rotate arround x
+    this->RotationMatrix = glm::rotate(this->RotationMatrix, y, glm::vec3(0,1,0)); // rotate arround x
+    this->RotationMatrix = glm::rotate(this->RotationMatrix, z, glm::vec3(0,0,1)); // rotate arround x
 
 
 }

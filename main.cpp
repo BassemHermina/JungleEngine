@@ -17,6 +17,7 @@
 #include "SkyBoxes/SkyBox.hpp"
 #include "helpers/Shadows.hpp"
 #include "Maze/Maze.hpp"
+#include "Physx/BoundingBox.hpp"
 
 #include <ctime>
 float rotation  = 0;
@@ -34,7 +35,7 @@ glm::mat4 biasMatrix(
 0.5, 0.5, 0.5, 1.0
 );
 
-glm::vec3 Hposition = glm::vec3(18.6875f,0.48537f ,-15 );
+glm::vec3 Hposition = glm::vec3(18.6875f,0.82537f ,-15 );
 float Hwalkspeed = 1.0f;
 
 
@@ -66,7 +67,8 @@ int main(void)
     //hierarchy *GameObjects_Bucket= new hierarchy;
 
     //GameObjects
-    SuzanneClass Suzanne;
+    //SuzanneClass Suzanne;
+
 
     //add the game objects to the list
     //GameObjects_Bucket->add(&Suzanne);
@@ -96,9 +98,14 @@ int main(void)
     WorldBlurry.InitBlurry();
 
     Maze m;
+    //createMazeBboxes(); //hardcoded number of objects
+    Bounding_box MazePart47(m.maze[47]);
+
+    /// Bbox params , arround one object of harry animation objects
     SuzanneClass harry;
-    harry.Translate(17.9875f,0.48537f,-15);
-    harry.Rotate(0,180,0);
+    Bounding_box Harry_Bbox (&harry);
+    harry.Translate(18.6875f,0.48537f ,-15);
+    //harry.Rotate(,90,0);
     harry.Scale(0.25,0.25,0.25);
 
     //================================================================
@@ -148,10 +155,13 @@ int main(void)
     Harryframes HarryAnim;
 
     HarryAnim.loadAnimation();
+
+    //Bounding_box HarryPotterAnim_Bbox(&HarryAnim);
+
     HarryAnim.Scale(0.23,0.23,0.23);
     HarryAnim.Translate(Hposition.x+0.4, Hposition.y, Hposition.z);
     int dumdum = 0;
- // HarryAnim.Rotate(80,80,0); el objects nfsaha fi 7aga 3'ala fl origin bta3ha , akid msh byrotat-o
+    HarryAnim.Rotate(80,80,0); //el objects nfsaha fi 7aga 3'ala fl origin bta3ha , akid msh byrotat-o
     // 3ala blender , eb2a garab
     ///////////////////////////////////////////////////////////////
 
@@ -159,9 +169,10 @@ int main(void)
 
     do{
         MoveHarry();
-        //harry.Translate(Hposition.x, Hposition.y, Hposition.z);
+        harry.Translate(Hposition.x, Hposition.y, Hposition.z); ///NEW!!: this one has the Bbox arrounnd it
+        harry.Rotate(0,rotation,0);
         HarryAnim.Translate(Hposition.x, Hposition.y, Hposition.z);
-
+        HarryAnim.Rotate(0,rotation,0);
 
         WORLDreal.clearThenDraw(PPFB);
 
@@ -209,7 +220,21 @@ int main(void)
         PhongShader->SendUniform("cameraPos", getCameraPosition());
        // GameObjects_Bucket->drawPhong();
         m.drawPhong();
-        harry.drawPhong();
+        /// for proper Bbox , comment this draw function and put asd_0001 in suzanne class object file
+        //harry.drawPhong();  /// da el bst5dmo 3ashan a7ot el bounding box 7waleh
+        /// 3ashan da by-inherit mn Monobehaviour, badal ma - a handle eni ast5dem
+        /// el bounding box m3 class harry frames we ydrab fi weshi
+        Harry_Bbox.draw();
+        //MazePart47.draw2();
+
+        // Bassem NEW : ana zawedt gowa class el maze , array fiha el bounding boxes, we 3amaltlha new m3
+        // load el objects nfsaha , geet arsmha gowa 3amal crash , grabt arsmha hena esht3'let ,msh 3aref leeh we mkasel afkar
+        //3'aleban el 3adad kan zyada
+        // la2 tle3 3ashan lw 7atet zero byedrab msh 3aref leeh b2a
+        // fi 7aga fi element 0 fl array , fl data bta3to
+        ///d5altha gowa 5las fl maze weesht3'alet , el error kan fi 0 bas!
+
+        //HarryPotterAnim_Bbox.draw();
         //================================================================
 
         if (glfwGetKey( GLFW_KEY_w ) == GLFW_PRESS){
@@ -577,11 +602,13 @@ void MoveHarry()
     }
     // Strafe right
     if (glfwGetKey( GLFW_KEY_d ) == GLFW_PRESS){
-        rotation = rotation + 1;
+       // Hposition =  Hposition +  vec3(-0.0167,0.0,0.0)  * Hwalkspeed;
+        rotation = rotation - 3;
     }
     // Strafe left
     if (glfwGetKey( GLFW_KEY_a ) == GLFW_PRESS){
-        Hposition =  Hposition +  vec3(0.0167,0.0,0.0)  * Hwalkspeed;
+        //Hposition =  Hposition +  vec3(0.0167,0.0,0.0)  * Hwalkspeed;
+        rotation = rotation + 3;
     }
     lastTime = currentTime;
 }

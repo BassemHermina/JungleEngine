@@ -16,9 +16,11 @@ bool SuzanneClass::update()
 SuzanneClass::SuzanneClass()
 {
     //.obj file and .bmp texture file
-    fileLocation = "Harry Potter/Harry_without_wand.obj";
+    ///fileLocation = "3dmodels/suzanne.obj";
+    fileLocation = "3dmodels/asdsa_000001.obj";
         //fileLocation = "cube.obj";
     textureLocation = "Harry Potter/Harry_all.bmp";
+    ///textureLocation = "3dmodels/suzanneTexBmp.bmp";
     res = loadOBJ(fileLocation, this->vertices, this->uvs, this->normals);
     //generateAndBindBuffers(); mynfa3sh di tt3ml hna , 3ashan ana wana barsem
     // kol mara haloop 3la kol el objects , a3ml bind warsmhom wad5ol 3l ba3do w keda

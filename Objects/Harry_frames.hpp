@@ -27,20 +27,23 @@ class Harryframes
     GLuint normalBuffer [70];
     GLuint uvBuffer;
 
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec2> uvs;
-    std::vector<glm::vec3> normals;
 
     glm::mat4 ProjectionMatrix;
     glm::mat4 ViewMatrix;
     glm::mat4 ModelMatrix;
     glm::mat4 MVP;
 
+
+public:
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec2> uvs;
+    std::vector<glm::vec3> normals;
+
+
     glm::mat4 RotationMatrix;
     glm::mat4 TranslationMatrix;
     glm::mat4 ScalingMatrix;
 
-public:
     bool update();
     Harryframes();
     GLuint loadaFrame(string frame);

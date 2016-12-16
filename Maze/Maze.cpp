@@ -14,6 +14,7 @@ Maze::Maze()
         file>>y;
         file>>z;
         maze[i]=new Parts(obj,txt,-x,y,z);
+        mazeBboxes[i] = new Bounding_box (maze[i]);
         i++;
     }
     file.close();
@@ -25,6 +26,8 @@ void Maze::drawPhong()
     for (int i=0;i<61;i++)
     {
         maze[i]->drawPhong();
+        if (i!=0)
+        mazeBboxes[i]->draw2();
     }
 }
 

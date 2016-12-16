@@ -83,6 +83,8 @@ add_executable( main
     Maze/Parts.hpp
     Objects/Harry_frames.cpp
     Objects/Harry_frames.hpp
+    Physx/BoundingBox.cpp
+    Physx/BoundingBox.hpp
 
 
 )

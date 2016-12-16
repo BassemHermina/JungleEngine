@@ -64,6 +64,13 @@ Shader * ShaderLibrary::GetcubeMapShader()
     return  &ShaderLibrary::cubeMapShader;
 }
 
+Shader ShaderLibrary::BoundingboxShader;
+
+Shader * ShaderLibrary::GetBoundingboxShader()
+{
+    return &ShaderLibrary::BoundingboxShader;
+}
+
 
 //TexToScreen
 

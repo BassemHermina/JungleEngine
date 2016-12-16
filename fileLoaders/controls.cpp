@@ -147,14 +147,14 @@ void computeMatricesFromInputs(){
     if ( glfwGetKey( GLFW_KEY_s ) == GLFW_PRESS){
         position =  position +  vec3(0.0,0.0,-1.0) * deltaTime * walkspeed;
     }
-	// Strafe right
+//     // Strafe right
 //    if (glfwGetKey( GLFW_KEY_d ) == GLFW_PRESS){
 //        position =  position +  vec3(-1.0,0.0,0.0) * deltaTime * walkspeed;
 //    }
-	// Strafe left
-    if (glfwGetKey( GLFW_KEY_a ) == GLFW_PRESS){
-        position =  position +  vec3(1.0,0.0,0.0) * deltaTime * walkspeed;
-    }
+//	// Strafe left
+//    if (glfwGetKey( GLFW_KEY_a ) == GLFW_PRESS){
+//        position =  position +  vec3(1.0,0.0,0.0) * deltaTime * walkspeed;
+//    }
     if (glfwGetKey( GLFW_KEY_RSHIFT ) == GLFW_PRESS){
         position =  position +  vec3(0.0,0.001,0.0);
     }

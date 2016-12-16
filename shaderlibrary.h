@@ -31,6 +31,10 @@ class ShaderLibrary {
         static Shader cubeMapShader;
         static Shader * GetcubeMapShader();
 
+        //BoundingBox render
+        static Shader BoundingboxShader;
+        static Shader * GetBoundingboxShader();
+
 
 
         void AddShader(string shaderName, Shader * shader);
