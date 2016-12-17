@@ -216,7 +216,7 @@ int main(void)
         HarryAnim.Translate(Hposition.x, Hposition.y, Hposition.z);
       //  HarryAnim.Rotate(0,rotation,0);
 
-        WORLDreal.clearThenDraw(0 );
+        WORLDreal.clearThenDraw(PPFB);
 
 
         ///RenderShadowMap to FB////
@@ -246,7 +246,7 @@ int main(void)
         /// render to PP-FRAMEBUFFER
         // hna lazm a2olo el clear color we clear we est5dem depth test
         // 3ashan ana lma oltohom abl keda kano 3la buffer tani (0)
-        glBindFramebuffer(GL_FRAMEBUFFER,0 );
+        glBindFramebuffer(GL_FRAMEBUFFER,PPFB );
         //dol by7salo gowa el ClearThenDraw ( frambuffer ID )
 //        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // We're not using stencil buffer now
@@ -329,16 +329,16 @@ int main(void)
         //renderfromTexture(Suzanne.texture);
         //renderfromTexture(ShadowObject.texture);
         //renderfromTexture(texColorBuffer);
-        //renderfromTextureandDepth( texColorBuffer, texDepthBuffer );
+        renderfromTextureandDepth( texColorBuffer, texDepthBuffer );
 
         ///////////////////render messages here
         ////////////////////////////////////
-        // Enable blending
-       // glEnable (GL_BLEND);
-        GLuint Hog;
-        Hog = loadBMP_custom("Splash/Hog.bmp");
+        // mynfa3sh a load l tex hna!
+        //GLuint Hog;
+        // Hog = loadBMP_custom("Splash/Hog.bmp");
 
-        RenderMessage(Hog);
+        //render photos to screen
+        //////////RenderMessage(Hog);
 
         if (glfwGetKey( GLFW_KEY_ENTER ) == GLFW_PRESS){
             noEnter = true;
@@ -377,10 +377,11 @@ int main(void)
   while (glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS &&
           glfwGetWindowParam( GLFW_OPENED ) && win)
   {
-    GLuint Hogwarts;
-    Hogwarts = loadBMP_custom("Splash/Hog.bmp");
-    renderfromTexture(Hogwarts);
-    glfwSwapBuffers();
+      //wla hna kman ynfa3
+    //GLuint Hogwarts;
+    //Hogwarts = loadBMP_custom("Splash/Hog.bmp");
+    //renderfromTexture(Hogwarts);
+    //glfwSwapBuffers();
     game.stop();
 
   }
