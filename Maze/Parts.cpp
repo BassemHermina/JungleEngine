@@ -109,6 +109,12 @@ void Parts::sendDatatoBuffers_Phong()
         (void*)0                      // array buffer offset
     );
 }
+void Parts::Translate(float x, float y, float z)
+{
+    glm::mat4 TranslationMatrixTemp = glm::translate(glm::mat4(), glm::vec3(x,y,z));
+    this->TranslationMatrix = TranslationMatrixTemp;
+    //cout << TranslationMatrix[0][0] << " " << TranslationMatrix[1][1] << " " << TranslationMatrix[2][2] << " ";
+}
 
 void Parts::sendDatatoBuffers_Depth()
 {
@@ -173,7 +179,9 @@ void Parts::updateMVP_Depth()
     ///5ali balak en el gwa el SHADOW OBJECT mo5talef 3n da, !!! we da 3'alat
     /// el mfrod asta5dem fl 7esabat el gowa el shadow object
     /// we 3'aleban b2a keda ab3to mn l main b2a msh gowa , da sabet el mfrod hna , el VP bas y3ni
-    this->ProjectionMatrix = glm::ortho(-20.0f, 20.0f, -15.0f, 15.0f, -10.0f, 30.0f);
+
+    ///// lma tsht3'al , ozbot b2a mkan el light wel look at , 3ashan tkamel ba2i l maze gowa el map
+    this->ProjectionMatrix = glm::ortho(-40.0f, 40.0f, -25.0f, 25.0f, -10.0f, 50.0f);
     this->ViewMatrix =  glm::lookAt(vec3(05,10,10), glm::vec3(0.0f, 0.0f, 0.0001f), glm::vec3(0.0, 1.0, 0.0));
 
 }

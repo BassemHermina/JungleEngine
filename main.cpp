@@ -18,6 +18,8 @@
 #include "helpers/Shadows.hpp"
 #include "Maze/Maze.hpp"
 #include "Physx/BoundingBox.hpp"
+#include <SFML/Audio.hpp>
+#include <SFML/System/Time.hpp>
 
 #include <ctime>
 float rotation  = 0;
@@ -26,8 +28,10 @@ void lightControls_Phong();
 float x = 1800;
 using namespace std;
 void renderfromTexture(GLuint TextureIDtobesampled);
+void RenderMessage(GLuint TextureIDtobesampled);
 void renderfromTextureandDepth(GLuint TextureIDtobesampled, GLuint DepthtextureID);
-
+bool noEnter = false;
+bool win = false;
 glm::mat4 biasMatrix(
 0.5, 0.0, 0.0, 0.0,
 0.0, 0.5, 0.0, 0.0,
@@ -39,9 +43,9 @@ glm::vec3 Hposition = glm::vec3(18.6875f,0.82537f ,-15 );
 float Hwalkspeed = 1.0f;
 
 
-void MoveHarry();
-void AnimateHarry(int, Harryframes HarryAnim);
-
+void MoveHarry(Bounding_box* h, Maze* m);
+void AnimateHarry(int, Harryframes HarryAnim );
+int collisionDetect(Bounding_box* h, Maze* m,glm::vec3 offset);
 int main(void)
 {
     initializeGL();
@@ -103,6 +107,9 @@ int main(void)
 
     /// Bbox params , arround one object of harry animation objects
     SuzanneClass harry;
+
+    SuzanneClass suzanne;
+    suzanne.Scale(10,10,10);
     Bounding_box Harry_Bbox (&harry);
     harry.Translate(18.6875f,0.48537f ,-15);
     //harry.Rotate(,90,0);
@@ -115,7 +122,7 @@ int main(void)
     GLuint PPFB;
     glGenFramebuffers(1,&PPFB);
     glBindFramebuffer(GL_FRAMEBUFFER, PPFB);
-
+    cout << PPFB << endl;
     // Generate texture
     GLuint texColorBuffer;
     glGenTextures(1, &texColorBuffer);
@@ -150,9 +157,38 @@ int main(void)
 
     //================================================================
 
+     GLuint Loading1Tex;
+     Loading1Tex = loadBMP_custom("Splash/Loading1.bmp");
+     renderfromTexture(Loading1Tex);
+     glfwSwapBuffers();
+
+     GLuint SPlashTex;
+     SPlashTex = loadBMP_custom("Splash/splash_shfaf.bmp");
+     /////////////////////music///////////////
+     sf::Music intro;
+     if(!intro.openFromFile("final/intro.ogg"))
+         cout<<"music error"<<endl;
+     intro.setVolume(100);
+     intro.setLoop(true);
+     intro.play();
+     intro.setPlayingOffset(sf::seconds(3));
+
+     sf::Music game;
+     if(!game.openFromFile("final/final.ogg"))
+         cout<<"music error"<<endl;
+     game.setVolume(100);
+     game.setLoop(true);
+
+
+
+
+
+
+//     renderfromTexture(SPlashTex);
     ///////////////////////////////////////////////////////////////
     /// Animation's tazbit
     Harryframes HarryAnim;
+    //Harryframes HarryStanding;
 
     HarryAnim.loadAnimation();
 
@@ -161,38 +197,56 @@ int main(void)
     HarryAnim.Scale(0.23,0.23,0.23);
     HarryAnim.Translate(Hposition.x+0.4, Hposition.y, Hposition.z);
     int dumdum = 0;
-    HarryAnim.Rotate(80,80,0); //el objects nfsaha fi 7aga 3'ala fl origin bta3ha , akid msh byrotat-o
+    //HarryAnim.Rotate(80,80,0); //el objects nfsaha fi 7aga 3'ala fl origin bta3ha , akid msh byrotat-o
     // 3ala blender , eb2a garab
     ///////////////////////////////////////////////////////////////
 
+
     //================================================================
 
-    do{
-        MoveHarry();
+ do{
+        HarryAnim.updateModelMatrix();
+        harry.updateModelMatrix();
+        MoveHarry(&Harry_Bbox , &m);
+
+        //cout << Hposition.z << endl;
+
         harry.Translate(Hposition.x, Hposition.y, Hposition.z); ///NEW!!: this one has the Bbox arrounnd it
         harry.Rotate(0,rotation,0);
         HarryAnim.Translate(Hposition.x, Hposition.y, Hposition.z);
-        HarryAnim.Rotate(0,rotation,0);
+      //  HarryAnim.Rotate(0,rotation,0);
 
-        WORLDreal.clearThenDraw(PPFB);
+        WORLDreal.clearThenDraw(0 );
+
 
         ///RenderShadowMap to FB////
+        suzanne.Scale(0.25,0.25,0.25);
+        suzanne.Translate(Hposition.x/1.48, 10, Hposition.z/10);
         ShadowObject.PreRenderShadowMap();
         //GameObjects_Bucket->drawDepthMap();
         // Enable Those to Draw shadows
-        m.drawDepthMap();
+        // byt3mlo clear mara we yfdal msh mwgood , msh bytrsem tani leeh ?!!!
+        glBindFramebuffer(GL_FRAMEBUFFER, ShadowObject.fb);
+        //glClearColor( 0.5f, 0.5f, 0.5f, 0.0f );// da mlosh lazma, hwa keda keda 3aref hya5od a mn el rasma  , el background mlhash lazma
+        //glClearDepth(0.5f); //debugging
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glCullFace(GL_FRONT);
+        //m.drawDepthMap();
+        suzanne.drawDepthMap();
+
         harry.drawDepthMap();
+
 
         //================================================================
 
         ///RenderScene to screen////
-        /// to render to screen , disable the RenderfromTexture function, and enable framebuffer0 here
+        /// to render to screen , disable the RenderfromTexture function, and enable framebuffer0 here, put 0 in WorldREAL.clearthendraw
         ///glBindFramebuffer(GL_FRAMEBUFFER, 0);  //return back to default buffer which is rendered to the screen
 
         /// render to PP-FRAMEBUFFER
         // hna lazm a2olo el clear color we clear we est5dem depth test
         // 3ashan ana lma oltohom abl keda kano 3la buffer tani (0)
-        glBindFramebuffer(GL_FRAMEBUFFER,PPFB );
+        glBindFramebuffer(GL_FRAMEBUFFER,0 );
         //dol by7salo gowa el ClearThenDraw ( frambuffer ID )
 //        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // We're not using stencil buffer now
@@ -220,6 +274,7 @@ int main(void)
         PhongShader->SendUniform("cameraPos", getCameraPosition());
        // GameObjects_Bucket->drawPhong();
         m.drawPhong();
+
         /// for proper Bbox , comment this draw function and put asd_0001 in suzanne class object file
         //harry.drawPhong();  /// da el bst5dmo 3ashan a7ot el bounding box 7waleh
         /// 3ashan da by-inherit mn Monobehaviour, badal ma - a handle eni ast5dem
@@ -255,15 +310,48 @@ int main(void)
 
 
         //renderfromTexture(depthTexture);
-
+        glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 200.0f); //was only 100
+                // Camera matrixs
+                glm::mat4 ViewMatrix       = glm::lookAt(
+                                           glm::vec3(Hposition.x - 3.5476 * sin(rotation) , 2.84254 ,Hposition.z - 3.5476 * cos(rotation)) ,           // Camera is here
+                                           glm::vec3(Hposition.x,(Hposition.y)+0.6 ,Hposition.z), // and looks here : at the same position, plus "direction"
+                                           glm::vec3(0,1,0)                  // Head is up (set to 0,-1,0 to look upside-down)
+                                       );
+                //glm::vec3 Hposition = glm::vec3(18.6875f,0.82537f ,-15 );
+        //cout<<" rotat: "<< rotation*56<<endl;
+                HarryAnim.Rotate(0,rotation*56,0);
+            //cout << Hposition.z <<endl;
+            setProjectionMatrix(ProjectionMatrix);
+            setViewMatrix(ViewMatrix);
 
         /////////////////////////////////////////////////
         // Post Processing
         //renderfromTexture(Suzanne.texture);
         //renderfromTexture(ShadowObject.texture);
         //renderfromTexture(texColorBuffer);
-        renderfromTextureandDepth( texColorBuffer, texDepthBuffer );
+        //renderfromTextureandDepth( texColorBuffer, texDepthBuffer );
 
+        ///////////////////render messages here
+        ////////////////////////////////////
+        // Enable blending
+       // glEnable (GL_BLEND);
+        GLuint Hog;
+        Hog = loadBMP_custom("Splash/Hog.bmp");
+
+        RenderMessage(Hog);
+
+        if (glfwGetKey( GLFW_KEY_ENTER ) == GLFW_PRESS){
+            noEnter = true;
+            intro.stop();
+            game.play();
+        }
+
+        if (glfwGetKey( GLFW_KEY_F5 ) == GLFW_PRESS){
+            Hposition.x = -18.6057;
+            Hposition.z = 9.81772;
+
+        }
+        if (!noEnter) renderfromTexture(SPlashTex);
 
 
 ////    GameObjects_Bucket->drawDepthMap();
@@ -271,6 +359,11 @@ int main(void)
         lightControls_Phong();
 
         //renderfromTexture(Suzanne2.getTextureSamplerIDtoBind());
+        if (Hposition.x <= -19.6057)
+        {
+           win = true;
+        }
+
 
         // Swap buffers
         glfwSwapBuffers();
@@ -279,10 +372,21 @@ int main(void)
 
   while(
         glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS &&
-        glfwGetWindowParam( GLFW_OPENED )
+        glfwGetWindowParam( GLFW_OPENED ) && !win
         );
+  while (glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS &&
+          glfwGetWindowParam( GLFW_OPENED ) && win)
+  {
+    GLuint Hogwarts;
+    Hogwarts = loadBMP_custom("Splash/Hog.bmp");
+    renderfromTexture(Hogwarts);
+    glfwSwapBuffers();
+    game.stop();
+
+  }
 
   // Close OpenGL window and terminate GLFW
+
   glfwTerminate();
     return 0;
 }
@@ -370,7 +474,7 @@ void renderfromTexture(GLuint TextureIDtobesampled)
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);  //return back to default buffer which is rendered to the screen
     glViewport(0,0,1024,768);
-    glClearColor(1,1,1,1); //yaslaam yaro7 5altak :D
+    glClearColor(0,0,0,0); //yaslaam yaro7 5altak :D
     glClear(GL_COLOR_BUFFER_BIT || GL_DEPTH_BUFFER_BIT);
 
     static const GLfloat g_quad_vertex_buffer_data[] = {
@@ -462,6 +566,117 @@ void renderfromTexture(GLuint TextureIDtobesampled)
     glDisableVertexAttribArray(TextToScreen->Attribute("vertex_screenspace"));
     glDisableVertexAttribArray(TextToScreen->Attribute("vertexUV"));
 
+}
+
+
+void RenderMessage(GLuint TextureIDtobesampled)
+{
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);  //return back to default buffer which is rendered to the screen
+    glViewport(0,0,1024,768);
+    //glClearColor(0,0,0,0); //yaslaam yaro7 5altak :D
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    static const GLfloat g_quad_vertex_buffer_data[] = {
+        -1.0f, -1.0f, 0.0f,
+        1.0f, -1.0f, 0.f,
+        -1.0f,  1.0f, 0.f,
+        -1.0f,  1.0f,0.f,
+        1.0f, -1.0f,0.f,
+        1.0f,  1.0f, 0.f,
+    };
+
+    static const GLfloat g_quad_uv_buffer_data[] = {
+//        0.0f, 1.0f,
+//        1.0f, 1.0f,
+//        0.0f, 0.0f,
+//        0.0f, 0.0f,
+//        1.0f, 1.0f,
+//        1.0f, 0.0f
+
+//        //rotated
+//        1.0f, 0.0f,
+//        0.0f, 0.0f,
+//        1.0f, 1.0f,
+//        1.0f, 1.0f,
+//        0.0f, 0.0f,
+//        0.0f, 1.0f
+
+        //fliped
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        0.0f, 1.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f
+
+
+
+    };
+
+    Shader * MessageShader;
+    MessageShader = ShaderLibrary::GetMessagesShader();
+    MessageShader->LoadShader("MessagesShader", "MessagesShader.vert", "MessagesShader.frag");
+
+    MessageShader->Use();
+    //glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LESS);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_ONE, GL_ONE); // additive blending
+
+    // mmkn azawed el depth msln wafta7 el depth test , a5ali el Z bta3to b rkam msln waagarab
+
+
+
+    //it uses gltexture 2
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, TextureIDtobesampled);
+
+    // some fixes for transperency , btshil el alwan mn el 7edood
+    //https://www.opengl.org/sdk/docs/tutorials/ClockworkCoders/discard.php
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    MessageShader->SendUniform("myTextureSampler", 2);
+    //glActiveTexture(GL_TEXTURE0);
+
+    GLuint quad_vertexbuffer;
+    glGenBuffers(1, &quad_vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
+
+    GLuint quad_uvbuffer;
+    glGenBuffers(1, &quad_uvbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, quad_uvbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_uv_buffer_data), g_quad_uv_buffer_data, GL_STATIC_DRAW);
+
+    // 1rst attribute buffer : vertices
+    glEnableVertexAttribArray(MessageShader->Attribute("vertex_screenspace"));
+    glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+    glVertexAttribPointer(
+        MessageShader->Attribute("vertex_screenspace"),  // The attribute we want to configure
+        3,                            // size
+        GL_FLOAT,                     // type
+        GL_FALSE,                     // normalized?
+        0,                            // stride
+        (void*)0                      // array buffer offset
+    );
+
+    // 2nd attribute buffer : UVs
+    glEnableVertexAttribArray(MessageShader->Attribute("vertexUV"));
+    glBindBuffer(GL_ARRAY_BUFFER, quad_uvbuffer);
+    glVertexAttribPointer(
+        MessageShader->Attribute("vertexUV"),                   // The attribute we want to configure
+        2,                            // size : U+V => 2
+        GL_FLOAT,                     // type
+        GL_FALSE,                     // normalized?
+        0,                            // stride
+        (void*)0                      // array buffer offset
+    );
+
+    // Draw the triangles !
+    glDrawArrays(GL_TRIANGLES, 0, 6); // 12*3 indices starting at 0 -> 12 triangles
+    glDisableVertexAttribArray(MessageShader->Attribute("vertex_screenspace"));
+    glDisableVertexAttribArray(MessageShader->Attribute("vertexUV"));
 }
 
 void renderfromTextureandDepth(GLuint TextureIDtobesampled, GLuint DepthtextureID)
@@ -560,9 +775,10 @@ void renderfromTextureandDepth(GLuint TextureIDtobesampled, GLuint DepthtextureI
 
 }
 
-void MoveHarry()
+void MoveHarry( Bounding_box* h , Maze *m)
 {
     // thats how delta time is used
+
 
     // glfwGetTime is called only once, the first time this function is called
     static double lastTime = glfwGetTime();
@@ -592,23 +808,138 @@ void MoveHarry()
 
     // Move forward
     if (glfwGetKey( GLFW_KEY_w ) == GLFW_PRESS){
-        //Hposition =  Hposition +  vec3(0.0,0.0,1.0) * deltaTime * Hwalkspeed;
-        Hposition =  Hposition +  vec3(0.0,0.0,0.0167) * Hwalkspeed;
+
+        glm::vec3 offset =vec3(0.0167*sin(rotation),0.0,0.0167*cos(rotation)) * Hwalkspeed;
+        int index=collisionDetect(h ,m,offset );
+
+
+     if (index)
+     {
+         //Hposition =  Hposition +  vec3(0.0,0.0,1.0) * deltaTime * Hwalkspeed;
+         Hposition =  Hposition +  vec3(0.0167*sin(rotation),0.0,0.0167*cos(rotation)) * Hwalkspeed;
+     }
+     if(index==53||index==54)
+     {m->maze[53]->Translate(200.0f,200.0f,200.0f);
+     m->maze[54]->Translate(200,200,200);//hanawar makano
+     }
+     if(index==55||index==56)
+     {m->maze[55]->Translate(200,200,200);
+     m->maze[56]->Translate(200,200,200);//hanawar makano
+     }
+     if(index==59||index==60)
+     {m->maze[59]->Translate(200,200,200);
+     m->maze[60]->Translate(200,200,200);//hanawar makano
+     }
+     if(index==57)
+     {
+     m->maze[57]->Translate(200,200,200);//hanawar makano
+     }
+     if(index==58)
+     {
+     m->maze[58]->Translate(200,200,200);//hanawar makano
+     }
+
+
+
+
+
+
     }
     // Move backward
     if ( glfwGetKey( GLFW_KEY_s ) == GLFW_PRESS){
-        //position =  Hposition +  vec3(0.0,0.0,-1.0) * deltaTime * Hwalkspeed;
-        Hposition =  Hposition +  vec3(0.0,0.0,-0.0167) * Hwalkspeed;
+       glm::vec3 offset =vec3(-0.0167*sin(rotation),0.0,-0.0167*cos(rotation)) * Hwalkspeed;
+
+        int index=collisionDetect(h ,m,offset );
+
+        //Hposition =  Hposition +  vec3(0.0,0.0,-1.0) * deltaTime * Hwalkspeed;
+        if (index){
+
+        Hposition =  Hposition- vec3(0.0167*sin(rotation),0.0,0.0167*cos(rotation)) * Hwalkspeed;
+        }
+        if(index==53||index==54)
+        {m->maze[53]->Translate(200,200,200);
+        m->maze[54]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==55||index==56)
+        {m->maze[55]->Translate(200,200,200);
+        m->maze[56]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==59||index==60)
+        {m->maze[59]->Translate(200,200,200);
+        m->maze[60]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==57)
+        {
+        m->maze[57]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==58)
+        {
+        m->maze[58]->Translate(200,200,200);//hanawar makano
+        }
     }
     // Strafe right
     if (glfwGetKey( GLFW_KEY_d ) == GLFW_PRESS){
-       // Hposition =  Hposition +  vec3(-0.0167,0.0,0.0)  * Hwalkspeed;
-        rotation = rotation - 3;
+        //glm::vec3 offset=vec3(-0.0167,0.0,0.0)  * Hwalkspeed;
+        rotation= rotation -0.08;
+       /* int index=collisionDetect(h ,m,offset );
+
+        //rotation = rotation - 3;
+        if (index)
+        {
+          //Hposition =  Hposition -  vec3(0.0167,0.0,0.0)  * Hwalkspeed;
+        }
+        if(index==53||index==54)
+        {m->maze[53]->Translate(200,200,200);
+        m->maze[54]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==55||index==56)
+        {m->maze[55]->Translate(200,200,200);
+        m->maze[56]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==59||index==60)
+        {m->maze[59]->Translate(200,200,200);
+        m->maze[60]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==57)
+        {
+        m->maze[57]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==58)
+        {
+        m->maze[58]->Translate(200,200,200);//hanawar makano
+        }*/
     }
     // Strafe left
     if (glfwGetKey( GLFW_KEY_a ) == GLFW_PRESS){
-        //Hposition =  Hposition +  vec3(0.0167,0.0,0.0)  * Hwalkspeed;
-        rotation = rotation + 3;
+        glm::vec3 offset=vec3(0.0167,0.0,0.0)  * Hwalkspeed;
+        //int index=collisionDetect(h ,m,offset );
+
+        rotation = rotation + 0.08;
+        /*
+        if (index)
+        {
+          Hposition =  Hposition +  vec3(0.0167,0.0,0.0)  * Hwalkspeed;
+        }
+        if(index==53||index==54)
+        {m->maze[53]->Translate(200,200,200);
+        m->maze[54]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==55||index==56)
+        {m->maze[55]->Translate(200,200,200);
+        m->maze[56]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==59||index==60)
+        {m->maze[59]->Translate(200,200,200);
+        m->maze[60]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==57)
+        {
+        m->maze[57]->Translate(200,200,200);//hanawar makano
+        }
+        if(index==58)
+        {
+        m->maze[58]->Translate(200,200,200);//hanawar makano
+        }*/
     }
     lastTime = currentTime;
 }
@@ -629,4 +960,31 @@ void AnimateHarry(int dumdum, Harryframes HarryAnim)
         HarryAnim.draw(1);
 
     lastTime = currentTime;
+}
+
+int collisionDetect(Bounding_box* h, Maze* m,glm::vec3 offset){
+
+//h->UpdateLocationWithObject();
+
+//cout << "Harry_z_min&max: " <<  h->upMinZvec.z <<" " << h->upMaxZvec.z << endl;
+//cout << "Harry_x_min&max: " <<  h->upMinXvec.x <<" " << h->upMaxXvec.x << endl;
+//cout << "Maze_z min&max: " << m->mazeBboxes[6]->upMinZvec.z << " " << m->mazeBboxes[6]->upMaxZvec.z << endl;
+//cout << "Maze_x min&max: " << m->mazeBboxes[6]->upMinXvec.x << " " << m->mazeBboxes[6]->upMaxXvec.x << endl;
+
+    for (int i =1; i<61 ; i++)
+    {
+
+        bool n = (h->upMinXvec.x+offset.x<=m->mazeBboxes[i]->upMaxXvec.x && h->upMaxXvec.x +offset.x>= m->mazeBboxes[i]->upMinXvec.x)&& (h->upMinZvec.z+offset.z<=m->mazeBboxes[i]->upMaxZvec.z && h->upMaxZvec.z+offset.z >= m->mazeBboxes[i]->upMinZvec.z); //(h->upmin.x<=m->mazeBboxes[i]->upmax.x && h->upmax.x >= m->mazeBboxes[i]->upmin.x  )
+
+        if (n)
+        {   //cout << i << endl;
+            //if it was a horecrux, return it's number , else, return 0
+             if (i>=53&&i<=60) return i;
+            return 0 ; // m3naha eno hassal collision
+
+        }
+   }
+return 1 ;
+
+
 }

@@ -35,6 +35,10 @@ class ShaderLibrary {
         static Shader BoundingboxShader;
         static Shader * GetBoundingboxShader();
 
+        //MessagesShader
+        static Shader MessagesShader;
+        static Shader * GetMessagesShader();
+
 
 
         void AddShader(string shaderName, Shader * shader);

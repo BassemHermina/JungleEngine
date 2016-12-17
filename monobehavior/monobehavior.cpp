@@ -113,7 +113,7 @@ void monobehaviorClass::sendDatatoBuffers_Depth()
     glm::mat4 VP = ProjectionMatrix * ViewMatrix;
     simpleDepthShader->SendUniform("depthVP", VP);
     simpleDepthShader->SendUniform("model", this->ModelMatrix);
-
+glBindBuffer    (GL_FRAMEBUFFER, 3); /// da rakam framebuffer el shadow el mfrod
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(simpleDepthShader->Attribute("vertexPosition_modelspace"));
     glBindBuffer(GL_ARRAY_BUFFER, this->vertexbuffer);
@@ -166,7 +166,6 @@ void monobehaviorClass::updateMVP_Depth()
     /// we 3'aleban b2a keda ab3to mn l main b2a msh gowa , da sabet el mfrod hna , el VP bas y3ni
     this->ProjectionMatrix = glm::ortho(-20.0f, 20.0f, -15.0f, 15.0f, -10.0f, 30.0f);
     this->ViewMatrix =  glm::lookAt(vec3(05,10,10), glm::vec3(0.0f, 0.0f, 0.0001f), glm::vec3(0.0, 1.0, 0.0));
-
 }
 
 void monobehaviorClass::drawPhong()
@@ -230,6 +229,8 @@ void monobehaviorClass::Scale(float x, float y, float z)
 void monobehaviorClass::updateModelMatrix()
 {
     this->ModelMatrix = TranslationMatrix * RotationMatrix * ScalingMatrix;
+    this->ModelMatrix_shadow = TranslationMatrix * RotationMatrix * ScalingMatrix;
 }
+
 
 

@@ -61,20 +61,19 @@ void main(){
     
 		resolution = vec2(1024,768);
 		vec2 uv = var_vertexUV.xy;
-   		float LinearDepth = LinearizeDepth(texture2D(DepthTex,uv).z);
-    	float Depth = texture2D(DepthTex,uv).z;
+   	float LinearDepth = LinearizeDepth(texture2D(DepthTex,uv).z);
+    float Depth = texture2D(DepthTex,uv).z;
 
-
-
-		//normal    
     	gl_FragColor.rgb = texture2D( myTextureSampler, var_vertexUV ).rgb;
+      
 
-    	gl_FragColor.r += Depth;
+      // if (R >=0)
+      //   gl_FragColor.rgb = vec3 (0,0,0);
+    	
+      gl_FragColor.r += Depth;
     	gl_FragColor.r-= Depth;
     	//inverted
     	//gl_FragColor.rgb = vec3( 1.0 - texture2D( myTextureSampler, var_vertexUV ).rgb);
-
-      
     	
 ////////////////////////////////////////////////
 ///// Radial effect (getting hit or something)
@@ -119,6 +118,8 @@ void main(){
 
 ////////////////////////////////////////////////
     // Vignette and Chromatic abbr. [Cubic Lens]
+
+  
     vec3 eta = vec3(1.0 + dispersion * etaR, 1.0 + dispersion * etaG, 1.0 + dispersion * etaB);
     vec3 color = vec3(0.0); 
 
@@ -129,17 +130,23 @@ void main(){
     vec2 guv = (f * eta.g) * scale * (uv.xy - 0.5) + 0.5;
     vec2 buv = (f * eta.b) * scale * (uv.xy - 0.5) + 0.5;
 
+    
     color.r = texture2D(myTextureSampler, ruv).r;
     color.g = texture2D(myTextureSampler, guv).g;
     color.b = texture2D(myTextureSampler, buv).b;
+    
 
     float d = length(uv - vec2(0.5));
     color *= clamp(1.0 - d*d, 0.0, 1.0);
-
+    //if (R!=0 && G!=0 && B!=0)
     gl_FragColor = vec4(color, 1.0);
+
+    //the color whih i get from the vector is normalized , is between 0->1
 
     gl_FragColor.r += Depth;
     gl_FragColor.r-= Depth;
+
+
 /////////////////////////////////////////////////
 
 

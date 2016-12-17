@@ -33,6 +33,8 @@ set(ALL_LIBS
         ${OPENGL_LIBRARY}
         GLFW_276
         GLEW_190
+        -lsfml-audio
+        -lsfml-system
 )
 
 add_definitions(

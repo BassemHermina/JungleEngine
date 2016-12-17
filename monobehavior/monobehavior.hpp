@@ -58,6 +58,11 @@ public:
     glm::mat4 ModelMatrix;
     glm::mat4 MVP;
 
+    glm::mat4 ProjectionMatrix_shadow;
+    glm::mat4 ViewMatrix_shadow;
+    glm::mat4 ModelMatrix_shadow;
+    glm::mat4 MVP_shadow;
+
     //to keep the translation, rotation, scaling and update the Model matrix
     glm::mat4 RotationMatrix;
     glm::mat4 TranslationMatrix;

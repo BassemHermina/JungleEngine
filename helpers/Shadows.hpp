@@ -49,7 +49,7 @@ public:
     void ConfigureShaderAndMatrices_ortho();
     void RenderScene();
     void initialize();
-
+    bool Inizialized = false;
 
 };
 

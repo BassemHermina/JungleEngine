@@ -205,6 +205,7 @@ void SkyBox::clearThenDraw(GLuint FB_ID)
     glCullFace(GL_BACK);
     //glDepthMask(GL_FALSE);
     glViewport(0,0,1024,768);
+    /////glClearDepth(1.0f); di bt3'aiar 7gat 3'ariba
     glClearColor(0.0f, 0.682352f, 0.933333f, 0.0f); //yaslaam yaro7 5altak :D
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     computeMatricesFromInputs();

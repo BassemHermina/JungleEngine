@@ -3,6 +3,6 @@
 
 void main(){
     
-    gl_FragColor = vec4(0,0,255,1);
-    
+    //gl_FragColor = vec4(0,0,0,1);
+    //unComment to enable boundingBoxes drawing 
 }

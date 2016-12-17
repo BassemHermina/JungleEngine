@@ -31,7 +31,6 @@ public:
     void draw();
     void draw2();
 
-    //handler ysh-awer 3l object we kol ma yt7arak yt7aak m3ah
     // Cube 1x1x1, centered on origin
     GLfloat vertices[108] = {
         // Positions
@@ -83,6 +82,23 @@ public:
         min_x, max_x,
         min_y, max_y,
         min_z, max_z;
+    ////////////////////////////////////////
+    /// \brief MinXvec
+    ///Bounding Box Properties
+    glm::vec3 MinXvec;
+    glm::vec3 MaxXvec;
+    glm::vec3 MinYvec;
+    glm::vec3 MaxYvec;
+    glm::vec3 MinZvec;
+    glm::vec3 MaxZvec;
+
+    glm::vec4 upMinXvec;
+    glm::vec4 upMaxXvec;
+    glm::vec4 upMinYvec;
+    glm::vec4 upMaxYvec;
+    glm::vec4 upMinZvec;
+    glm::vec4 upMaxZvec;
+    ////
 
     //handler ysh-awer 3l object
     monobehaviorClass *theObject;

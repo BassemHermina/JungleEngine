@@ -104,6 +104,9 @@ Shadow::Shadow()
 }
 
 void Shadow::PreRenderShadowMap(){
+
+    if (!Inizialized){
+
     //required before rendering objects bucket with simple depth shader
     //implement here when it runs in the main loop
     Shader * simpleDepthMap;
@@ -111,6 +114,7 @@ void Shadow::PreRenderShadowMap(){
 
     ///RenderShadowMap to FB////
     //the framebuffer must be bind before any glFunction!!!!!!!!!!!!!!!
+    cout << "fb: " << fb << endl;
     glBindFramebuffer(GL_FRAMEBUFFER, this->fb);
     glClearColor( 0.0f, 1.0f, 1.0f, 1.0f );// da mlosh lazma, hwa keda keda 3aref hya5od a mn el rasma  , el background mlhash lazma
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -118,8 +122,8 @@ void Shadow::PreRenderShadowMap(){
     glViewport(0,0,2048,2048);  // must be same numbers in shadowmap object Texture Image 2D !!!
     simpleDepthMap->Use();
     glCullFace(GL_FRONT);
-
-
+Inizialized = true;
+}
 
 }
 
@@ -137,12 +141,12 @@ void Shadow::ConfigureShaderAndMatrices_ortho()
 
     ///lel asaf ana lesa msh bsta5dem dol fl 7sabat , basta5dem 7agat zyhom gowa el UpdateMVP_simpleDepthMap el gwa el MonoBehaviour
     // Compute the MVP matrix from the light's point of view
-    depthProjectionMatrix = glm::ortho(-20.0f, 20.0f, -15.0f, 15.0f, -10.0f, 30.0f);
-    depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0.0f, 0.0f, 0.0001f), glm::vec3(0.0, 1.0, 0.0));
-    depthVP = depthProjectionMatrix * depthViewMatrix;
-
+//    depthProjectionMatrix = glm::ortho(-20.0f, 20.0f, -15.0f, 15.0f, -10.0f, 30.0f);
+//    depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0.0f, 0.0f, 0.0001f), glm::vec3(0.0, 1.0, 0.0));
+//    depthVP = depthProjectionMatrix * depthViewMatrix;
     depthProjectionMatrix = glm::ortho(-20.0f, 20.0f, -15.0f, 15.0f, -10.0f, 30.0f);
     depthViewMatrix = glm::lookAt(vec3(05,10,10), glm::vec3(0.0f, 0.0f, 0.0001f), glm::vec3(0.0, 1.0, 0.0));
+    depthVP = depthProjectionMatrix * depthViewMatrix;
 
     // Send our transformation to the currently bound shader,
     // in the "MVP" uniform

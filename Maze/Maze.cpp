@@ -18,7 +18,6 @@ Maze::Maze()
         i++;
     }
     file.close();
-
 }
 
 void Maze::drawPhong()

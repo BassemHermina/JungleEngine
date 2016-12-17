@@ -71,6 +71,13 @@ Shader * ShaderLibrary::GetBoundingboxShader()
     return &ShaderLibrary::BoundingboxShader;
 }
 
+Shader ShaderLibrary::MessagesShader;
+
+Shader * ShaderLibrary::GetMessagesShader()
+{
+    return &ShaderLibrary::MessagesShader;
+}
+
 
 //TexToScreen
 

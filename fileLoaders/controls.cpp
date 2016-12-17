@@ -187,19 +187,29 @@ void computeMatricesFromInputs(){
 //    glfwSetMousePos(xpos, ypos);
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 200.0f); //was only 100
+   /* ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 200.0f); //was only 100
 	// Camera matrix
 	ViewMatrix       = glm::lookAt(
                                 position,           // Camera is here
                                 position+direction, // and looks here : at the same position, plus "direction"
 								up                  // Head is up (set to 0,-1,0 to look upside-down)
 						   );
-
+*/
     //std::cout << position.x << " " << position.y << " " << position.z << endl;
     //std::cout << horizontalAngle << " " << verticalAngle << endl;
+    //cout <<(position).x << " " <<  (position).y << " " <<(position).z << endl;
+    //cout << FoV << endl;
 
     // For the next frame, the "last time" will be "now"
     lastTime = currentTime;
 
 }
 
+void setViewMatrix (glm::mat4 V)
+{
+    ViewMatrix=V ;
+}
+void setProjectionMatrix(glm::mat4 V)
+{
+   ProjectionMatrix=V;
+}
